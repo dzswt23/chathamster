@@ -8,12 +8,12 @@ public abstract class Message {
     private Receiver receiver;
 
     //Constructor
-    public Message(Receiver receiver){
+    public Message(Receiver receiver) {
         this.receiver = receiver;
     }
 
     //Methods
-    public Receiver getReceiver(){
+    public Receiver getReceiver() {
         return receiver;
     }
 

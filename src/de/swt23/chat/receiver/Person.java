@@ -4,11 +4,11 @@ public class Person extends Receiver {
 
     private final String username;
 
-    public Person(String username){
+    public Person(String username) {
         this.username = username;
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
 }

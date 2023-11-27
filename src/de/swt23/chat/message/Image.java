@@ -3,34 +3,34 @@ package de.swt23.chat.message;
 
 import de.swt23.chat.receiver.Receiver;
 
-import java.io.InputStream;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
-public class Image extends Message{
+public class Image extends Message {
 
     //Attributes
     private String path;
 
     //Constructor
-    public Image(Receiver receiver, String path){
+    public Image(Receiver receiver, String path) {
         super(receiver);
         this.path = path.toLowerCase();
     }
 
     //Methods
-    public String getMimeType(){
+    public String getMimeType() {
         String mimeType = "image/";
-        if(path.contains(".png")) {
+        if (path.contains(".png")) {
             mimeType += "png";
 
         }
-        if(path.contains(".jpg") || path.contains(".jpeg")){
-           mimeType += "jpg";
+        if (path.contains(".jpg") || path.contains(".jpeg")) {
+            mimeType += "jpg";
         }
         return mimeType;
     }
 
-    public InputStream getImageData(){
+    public InputStream getImageData() {
 
         byte[] array = new byte[100];
 
