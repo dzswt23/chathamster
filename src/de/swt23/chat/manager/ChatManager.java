@@ -11,6 +11,7 @@ import de.thm.oop.chat.base.server.BasicTHMChatServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * manager class to manage connection to server and functionality
@@ -248,5 +249,25 @@ public class ChatManager {
             groupNames.add(group.getGroupName());
         }
         return groupNames;
+    }
+
+    /**
+     * get a list of the most recent 100 messages
+     *
+     * @return arraylist of the recent messages or null if the request failed
+     */
+    public ArrayList<String> getMessages() {
+        if (currentSession == null) {
+            return null;
+        }
+        try {
+            return new ArrayList<>(Arrays.asList(chatServer.getMostRecentMessages(currentSession.getUsername(), currentSession.getPassword())));
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public ArrayList<Group> getGroups() {
+        return groups;
     }
 }
