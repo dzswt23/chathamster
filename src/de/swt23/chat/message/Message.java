@@ -3,7 +3,7 @@ package de.swt23.chat.message;
 public abstract class Message {
 
     //Attribute
-    Receiver receiver;
+    private Receiver receiver;
 
     //Constructor
     public Message(Receiver receiver){

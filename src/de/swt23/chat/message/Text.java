@@ -1,12 +1,12 @@
 package de.swt23.chat.message;
 
-public class textMessage extends Message{
+public class Text extends Message{
 
     //Attributes
     private String text;
 
     //Constructor
-    public textMessage(String text){
+    public Text(Receiver receiver, String text){
         super(receiver);
         this.text = text;
 
