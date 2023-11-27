@@ -1,5 +1,8 @@
 package de.swt23.chat.session;
 
+/**
+ * temporarily saves the login data of the user
+ */
 public class Session {
     private final String username;
     private final String password;

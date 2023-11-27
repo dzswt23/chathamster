@@ -14,8 +14,6 @@ import java.util.ArrayList;
 
 /**
  * manager class to manage connection to server and functionality
- *
- * @author Julian Oswald
  */
 public class ChatManager {
     private final BasicTHMChatServer chatServer;
@@ -38,7 +36,7 @@ public class ChatManager {
      */
     public boolean login(String username, String password) {
         try {
-            // throws error if username & password are not correct
+            // throws exception if username & password are not correct
             chatServer.getUsers(username, password);
             currentSession = new Session(username, password);
             return true;
@@ -50,9 +48,9 @@ public class ChatManager {
     /**
      * get a list of all the users
      *
-     * @return string array of registered usernames
+     * @return arraylist of registered people
      */
-    public ArrayList<Person> getUserList() {
+    public ArrayList<Person> getPeople() {
         if (currentSession == null) {
             return null;
         }
@@ -168,7 +166,7 @@ public class ChatManager {
      * @return object of person or null if not found
      */
     public Person getPerson(String username) {
-        for (Person person : getUserList()) {
+        for (Person person : getPeople()) {
             if (person.getUsername().equalsIgnoreCase(username)) {
                 return person;
             }
@@ -184,6 +182,10 @@ public class ChatManager {
      * @return true if the message was sent successfully
      */
     public boolean sendMessage(Message message, Receiver receiver) {
+        // check if the user is logged in
+        if (currentSession == null) {
+            return false;
+        }
         if (message instanceof Image) {
             return sendImageMessage((Image) message, receiver);
         } else {
