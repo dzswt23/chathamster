@@ -7,8 +7,6 @@ import java.io.FileInputStream;
 public class Image extends Message{
 
     //Attributes
-    private String mimeType;
-
     private String path;
 
     //Constructor
