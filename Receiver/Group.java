@@ -1,4 +1,4 @@
-package Receiver;
+package receiver;
 import java.util.ArrayList;
 
 public class Group extends Receiver {

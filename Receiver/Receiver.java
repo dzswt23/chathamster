@@ -1,4 +1,4 @@
-package Receiver;
+package receiver;
 
 public abstract class Receiver {
     
