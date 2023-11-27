@@ -1,10 +1,10 @@
-package receiver;
+package de.swt23.chat.receiver;
 import java.util.ArrayList;
 
 public class Group extends Receiver {
 
-    private String groupName;
-    private Arraylist<Person> members;
+    private final String groupName;
+    private final ArrayList<Person> members;
 
     public Group(String groupName){
         this.groupName = groupName;
@@ -22,9 +22,7 @@ public class Group extends Receiver {
         return members.remove(member);
     }
 
-    public ArrayList<> getMembers(){
+    public ArrayList<Person> getMembers(){
             return members;
         }
-    }
-
 }

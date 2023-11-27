@@ -1,6 +1,8 @@
 package de.swt23.chat.message;
 
 
+import de.swt23.chat.receiver.Receiver;
+
 import java.io.InputStream;
 import java.io.FileInputStream;
 

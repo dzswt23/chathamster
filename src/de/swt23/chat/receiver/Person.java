@@ -1,8 +1,8 @@
-package receiver;
+package de.swt23.chat.receiver;
 
 public class Person extends Receiver {
 
-    private String username;
+    private final String username;
 
     public Person(String username){
         this.username = username;

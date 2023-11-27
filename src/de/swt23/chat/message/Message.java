@@ -1,5 +1,7 @@
 package de.swt23.chat.message;
 
+import de.swt23.chat.receiver.Receiver;
+
 public abstract class Message {
 
     //Attribute
