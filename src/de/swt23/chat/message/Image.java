@@ -1,8 +1,6 @@
 package de.swt23.chat.message;
 
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.FileInputStream;
 
@@ -10,23 +8,24 @@ public class Image extends Message{
 
     //Attributes
     private String mimeType;
-    private String imageData;
-    private String url;
+
+    private String path;
 
     //Constructor
-    public Image(Receiver receiver, String url){
+    public Image(Receiver receiver, String path){
         super(receiver);
-        this.url = url.toLowerCase();
+        this.path = path.toLowerCase();
     }
 
     //Methods
     public String getMimeType(){
-        if(url.contains(".png")) {
-            mimeType = "png";
+        String mimeType = "image/";
+        if(path.contains(".png")) {
+            mimeType += "png";
 
         }
-        if(url.contains(".jpg")){
-           mimeType = "jpg";
+        if(path.contains(".jpg") || path.contains(".jpeg")){
+           mimeType += "jpg";
         }
         return mimeType;
     }
@@ -36,7 +35,7 @@ public class Image extends Message{
         byte[] array = new byte[100];
 
         try {
-            InputStream is = new FileInputStream(url);
+            InputStream is = new FileInputStream(path);
 
             System.out.println("Available bytes in the file: " + is.available());
 
