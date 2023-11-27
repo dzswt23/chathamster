@@ -1,12 +1,10 @@
-package Classes;
+package Receiver;
 
 public class Person extends Receiver {
 
     private String username;
-    private String password;
 
-    public Person(String username, String password){
-        this.password = password;
+    public Person(String username){
         this.username = username;
     }
 
