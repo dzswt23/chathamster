@@ -81,6 +81,10 @@ public class ChatManager {
         if (getGroup(name) != null) {
             return false;
         }
+        // check if there is a person that has this name
+        if (getPerson(name) != null) {
+            return false;
+        }
         groups.add(new Group(name));
         return true;
     }
@@ -179,18 +183,22 @@ public class ChatManager {
      * send a message (text or image) to a receiver (person or group)
      *
      * @param message  the message to be sent
-     * @param receiver the recipient of the message
      * @return true if the message was sent successfully
      */
-    public boolean sendMessage(Message message, Receiver receiver) {
+    public boolean sendMessage(Message message) {
         // check if the user is logged in
         if (currentSession == null) {
             return false;
         }
+        if (message.getReceiver() instanceof Person) {
+            if (currentSession.getUsername().equalsIgnoreCase(((Person) message.getReceiver()).getUsername())) {
+                return false;
+            }
+        }
         if (message instanceof Image) {
-            return sendImageMessage((Image) message, receiver);
+            return sendImageMessage((Image) message, message.getReceiver());
         } else {
-            return sendTextMessage((Text) message, receiver);
+            return sendTextMessage((Text) message, message.getReceiver());
         }
     }
 
@@ -205,6 +213,9 @@ public class ChatManager {
         try {
             if (receiver instanceof Group) {
                 for (Person person : ((Group) receiver).getMembers()) {
+                    if (currentSession.getUsername().equalsIgnoreCase(person.getUsername())) {
+                        continue;
+                    }
                     chatServer.sendImageMessage(currentSession.getUsername(), currentSession.getPassword(), person.getUsername(), image.getMimeType(), image.getImageData());
                 }
             } else {
@@ -227,6 +238,9 @@ public class ChatManager {
         try {
             if (receiver instanceof Group) {
                 for (Person person : ((Group) receiver).getMembers()) {
+                    if (currentSession.getUsername().equalsIgnoreCase(person.getUsername())) {
+                        continue;
+                    }
                     chatServer.sendTextMessage(currentSession.getUsername(), currentSession.getPassword(), person.getUsername(), text.getText());
                 }
             } else {

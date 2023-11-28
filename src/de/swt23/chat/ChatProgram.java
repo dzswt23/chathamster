@@ -1,8 +1,12 @@
 package de.swt23.chat;
 
 import de.swt23.chat.manager.ChatManager;
+import de.swt23.chat.message.Image;
+import de.swt23.chat.message.Message;
+import de.swt23.chat.message.Text;
 import de.swt23.chat.receiver.Group;
 import de.swt23.chat.receiver.Person;
+import de.swt23.chat.receiver.Receiver;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -172,9 +176,17 @@ public class ChatProgram {
                     break;
 
                 case "d":
-                    String recipientMessage = getUserInput("Recipient of the message(group or person):");
-                    // Empfänger der Nachricht
+                    String input = getUserInput("Recipient of the message(group or person):");
+                    Receiver receiver = manager.getPerson(input);
+                    if (receiver == null) {
+                        receiver = manager.getGroup(input);
+                        if (receiver == null) {
+                            System.out.println("There is no group or person called " + input);
+                            break;
+                        }
+                    }
 
+                    Message message;
                     String imageOrText;
 
                     do {
@@ -186,16 +198,23 @@ public class ChatProgram {
                         imageOrText = getUserInput("Your choice:").toLowerCase();
                         switch (imageOrText) {
                             case "a":
-                                String imageMessage = getUserInput("Enter path of the image:");
+                                message = new Image(receiver, getUserInput("Enter path of the image:"));
+                                if (manager.sendMessage(message)) {
+                                    System.out.println("Message sent successfully");
+                                } else {
+                                    System.out.println("The message was not sent");
+                                }
                                 break;
-
                             case "b":
-                                String textMessage = getUserInput("Content of the message:");
+                                message = new Text(receiver, getUserInput("Content of the message:"));
+                                if (manager.sendMessage(message)) {
+                                    System.out.println("Message sent successfully");
+                                } else {
+                                    System.out.println("The message was not sent");
+                                }
                                 break;
-
                             case "c":
                                 break;
-
                             default:
                                 System.out.println("Invalid selection. Please re-enter: A, B, C");
                                 break;
@@ -217,6 +236,7 @@ public class ChatProgram {
     }
 
     public static void main(String[] args) {
+        // Z2ZtQB0q
         scanner = new Scanner(System.in);
         manager = new ChatManager();
         try {
