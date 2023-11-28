@@ -3,6 +3,7 @@ package de.swt23.chat.message;
 
 import de.swt23.chat.receiver.Receiver;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
@@ -22,11 +23,11 @@ public class Image extends Message {
         String mimeType = "image/";
         if (path.contains(".png")) {
             mimeType += "png";
-
         }
         if (path.contains(".jpg") || path.contains(".jpeg")) {
             mimeType += "jpg";
         }
+        System.out.println(mimeType);
         return mimeType;
     }
 
@@ -35,16 +36,6 @@ public class Image extends Message {
             FileInputStream is = new FileInputStream(path);
 
             System.out.println("Available bytes in the file: " + is.available());
-
-            byte[] array = new byte[is.available()];
-            // Read byte from the input stream
-            is.read(array);
-            System.out.println("Data read from the file: ");
-
-            // Convert Byte Data to String
-            String data = new String(array);
-            System.out.println(data);
-
             return is;
         } catch (Exception e) {
             e.getStackTrace();
