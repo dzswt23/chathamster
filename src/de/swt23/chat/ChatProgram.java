@@ -236,7 +236,6 @@ public class ChatProgram {
     }
 
     public static void main(String[] args) {
-        // Z2ZtQB0q
         scanner = new Scanner(System.in);
         manager = new ChatManager();
         try {
