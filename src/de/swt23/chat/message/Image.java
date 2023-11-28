@@ -31,14 +31,12 @@ public class Image extends Message {
     }
 
     public InputStream getImageData() {
-
-        byte[] array = new byte[100];
-
         try {
-            InputStream is = new FileInputStream(path);
+            FileInputStream is = new FileInputStream(path);
 
             System.out.println("Available bytes in the file: " + is.available());
 
+            byte[] array = new byte[is.available()];
             // Read byte from the input stream
             is.read(array);
             System.out.println("Data read from the file: ");
@@ -47,10 +45,7 @@ public class Image extends Message {
             String data = new String(array);
             System.out.println(data);
 
-            // Close the input stream
-            is.close();
             return is;
-
         } catch (Exception e) {
             e.getStackTrace();
         }

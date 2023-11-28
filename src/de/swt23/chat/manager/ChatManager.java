@@ -223,6 +223,7 @@ public class ChatManager {
             }
             return true;
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
