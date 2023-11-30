@@ -275,7 +275,8 @@ public class ChatManager {
             return null;
         }
         try {
-            return new ArrayList<>(Arrays.asList(chatServer.getMostRecentMessages(currentSession.getUsername(), currentSession.getPassword())));
+            // create an ArrayList of all messages newer than message with id 0
+            return new ArrayList<>(Arrays.asList(chatServer.getMessages(currentSession.getUsername(), currentSession.getPassword(), 0)));
         } catch (IOException e) {
             return null;
         }
