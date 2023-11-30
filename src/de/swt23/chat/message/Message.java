@@ -17,29 +17,34 @@ public abstract class Message {
         this.timeStamp = timeStamp;
     }
 
+    public Message(Receiver receiver, MessageDirection direction) {
+        this.receiver = receiver;
+        this.direction = direction;
+
+    }
+
     //Methods
     public Receiver getReceiver() {
         return receiver;
     }
 
-    public MessageDirection getDirection(){
+    public MessageDirection getDirection() {
         return direction;
     }
 
-    public String getTimeStamp(){
+    public String getTimeStamp() {
         return timeStamp;
     }
 
-    public String toString(){
-        String output= timeStamp+ " | ";
-        if(direction == MessageDirection.IN){
-            output = output + receiver+" -> mir: ";
-        }else{
-            output = output + "ich -> "+receiver+": ";
+    public String toString() {
+        String output = timeStamp + " | ";
+        if (direction == MessageDirection.IN) {
+            output = output + receiver + " -> mir: ";
+        } else {
+            output = output + "ich -> " + receiver + ": ";
         }
         return output;
     }
-
 
 
 }

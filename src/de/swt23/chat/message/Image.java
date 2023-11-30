@@ -14,14 +14,19 @@ public class Image extends Message {
 
 
     //Constructor
-    public Image(Receiver receiver, MessageDirection direction, String timeStamp,String path) {
-        super(receiver,direction, timeStamp);
+    public Image(Receiver receiver, MessageDirection direction, String timeStamp, String path) {
+        super(receiver, direction, timeStamp);
+        this.path = path.toLowerCase();
+    }
+
+    public Image(Receiver receiver, MessageDirection direction, String path) {
+        super(receiver, direction);
         this.path = path.toLowerCase();
     }
 
     //Methods
     public String getMimeType() {
-        if(super.getDirection()== MessageDirection.OUT){
+        if (super.getDirection() == MessageDirection.OUT) {
             String mimeType = "image/";
             if (path.contains(".png")) {
                 mimeType += "png";
@@ -37,7 +42,7 @@ public class Image extends Message {
     }
 
     public InputStream getImageData() {
-        if(super.getDirection() == MessageDirection.IN) {
+        if (super.getDirection() == MessageDirection.IN) {
             try {
                 FileInputStream is = new FileInputStream(path);
 
@@ -48,8 +53,9 @@ public class Image extends Message {
         }
         return null;
     }
+
     @Override
-    public String toString(){
+    public String toString() {
         return super.toString() + path;
     }
 }
