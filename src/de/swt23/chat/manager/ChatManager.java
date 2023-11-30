@@ -137,7 +137,7 @@ public class ChatManager {
         if (group.getMembers().contains(person)) {
             return false;
         }
-        group.getMembers().add(person);
+        group.addPerson(person);
         return true;
     }
 
@@ -160,7 +160,7 @@ public class ChatManager {
         if (!group.getMembers().contains(person)) {
             return false;
         }
-        group.getMembers().remove(person);
+        group.removePerson(person);
         return true;
     }
 
