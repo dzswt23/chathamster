@@ -111,7 +111,7 @@ public class ChatManager {
      */
     public Group getGroup(String name) {
         for (Group group : groups) {
-            if (group.getGroupName().equals(name)) {
+            if (group.getGroupName().equalsIgnoreCase(name)) {
                 return group;
             }
         }
@@ -160,7 +160,7 @@ public class ChatManager {
         if (!group.getMembers().contains(person)) {
             return false;
         }
-        group.getMembers().add(person);
+        group.getMembers().remove(person);
         return true;
     }
 
@@ -223,7 +223,6 @@ public class ChatManager {
             }
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
             return false;
         }
     }
