@@ -12,34 +12,44 @@ public class Image extends Message {
     //Attributes
     private String path;
 
+
     //Constructor
-    public Image(Receiver receiver, String path) {
-        super(receiver);
+    public Image(Receiver receiver, MessageDirection direction, String timeStamp,String path) {
+        super(receiver,direction, timeStamp);
         this.path = path.toLowerCase();
     }
 
     //Methods
     public String getMimeType() {
-        String mimeType = "image/";
-        if (path.contains(".png")) {
-            mimeType += "png";
-        }
-        if (path.contains(".jpg") || path.contains(".jpeg")) {
-            mimeType += "jpg";
-        }
+        if(super.getDirection()== MessageDirection.OUT){
+            String mimeType = "image/";
+            if (path.contains(".png")) {
+                mimeType += "png";
+            }
+            if (path.contains(".jpg") || path.contains(".jpeg")) {
+                mimeType += "jpg";
+            }
 
-        return mimeType;
+            return mimeType;
+
+        }
+        return null;
     }
 
     public InputStream getImageData() {
-        try {
-            FileInputStream is = new FileInputStream(path);
+        if(super.getDirection() == MessageDirection.IN) {
+            try {
+                FileInputStream is = new FileInputStream(path);
 
-
-            return is;
-        } catch (Exception e) {
-            e.getStackTrace();
+                return is;
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
         }
         return null;
+    }
+    @Override
+    public String toString(){
+        return super.toString() + path;
     }
 }
