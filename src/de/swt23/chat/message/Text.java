@@ -8,15 +8,24 @@ public class Text extends Message {
     private String text;
 
     //Constructor
-    public Text(Receiver receiver, String text) {
-        super(receiver);
+    public Text(Receiver receiver, MessageDirection direction, String timeStamp, String text) {
+        super(receiver, direction, timeStamp);
         this.text = text;
+    }
 
+    public Text(Receiver receiver, MessageDirection direction, String text) {
+        super(receiver, direction);
+        this.text = text;
     }
 
     //Methods
     public String getText() {
         return text;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + text;
     }
 
 }
