@@ -11,6 +11,7 @@ import de.thm.oop.chat.base.server.BasicTHMChatServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * manager class to manage connection to server and functionality
@@ -80,6 +81,10 @@ public class ChatManager {
         if (getGroup(name) != null) {
             return false;
         }
+        // check if there is a person that has this name
+        if (getPerson(name) != null) {
+            return false;
+        }
         groups.add(new Group(name));
         return true;
     }
@@ -106,7 +111,7 @@ public class ChatManager {
      */
     public Group getGroup(String name) {
         for (Group group : groups) {
-            if (group.getGroupName().equals(name)) {
+            if (group.getGroupName().equalsIgnoreCase(name)) {
                 return group;
             }
         }
@@ -132,7 +137,7 @@ public class ChatManager {
         if (group.getMembers().contains(person)) {
             return false;
         }
-        group.getMembers().add(person);
+        group.addPerson(person);
         return true;
     }
 
@@ -155,7 +160,7 @@ public class ChatManager {
         if (!group.getMembers().contains(person)) {
             return false;
         }
-        group.getMembers().add(person);
+        group.removePerson(person);
         return true;
     }
 
@@ -178,18 +183,22 @@ public class ChatManager {
      * send a message (text or image) to a receiver (person or group)
      *
      * @param message  the message to be sent
-     * @param receiver the recipient of the message
      * @return true if the message was sent successfully
      */
-    public boolean sendMessage(Message message, Receiver receiver) {
+    public boolean sendMessage(Message message) {
         // check if the user is logged in
         if (currentSession == null) {
             return false;
         }
+        if (message.getReceiver() instanceof Person) {
+            if (currentSession.getUsername().equalsIgnoreCase(((Person) message.getReceiver()).getUsername())) {
+                return false;
+            }
+        }
         if (message instanceof Image) {
-            return sendImageMessage((Image) message, receiver);
+            return sendImageMessage((Image) message, message.getReceiver());
         } else {
-            return sendTextMessage((Text) message, receiver);
+            return sendTextMessage((Text) message, message.getReceiver());
         }
     }
 
@@ -204,6 +213,9 @@ public class ChatManager {
         try {
             if (receiver instanceof Group) {
                 for (Person person : ((Group) receiver).getMembers()) {
+                    if (currentSession.getUsername().equalsIgnoreCase(person.getUsername())) {
+                        continue;
+                    }
                     chatServer.sendImageMessage(currentSession.getUsername(), currentSession.getPassword(), person.getUsername(), image.getMimeType(), image.getImageData());
                 }
             } else {
@@ -226,6 +238,9 @@ public class ChatManager {
         try {
             if (receiver instanceof Group) {
                 for (Person person : ((Group) receiver).getMembers()) {
+                    if (currentSession.getUsername().equalsIgnoreCase(person.getUsername())) {
+                        continue;
+                    }
                     chatServer.sendTextMessage(currentSession.getUsername(), currentSession.getPassword(), person.getUsername(), text.getText());
                 }
             } else {
@@ -248,5 +263,25 @@ public class ChatManager {
             groupNames.add(group.getGroupName());
         }
         return groupNames;
+    }
+
+    /**
+     * get a list of the most recent 100 messages
+     *
+     * @return arraylist of the recent messages or null if the request failed
+     */
+    public ArrayList<String> getMessages() {
+        if (currentSession == null) {
+            return null;
+        }
+        try {
+            return new ArrayList<>(Arrays.asList(chatServer.getMostRecentMessages(currentSession.getUsername(), currentSession.getPassword())));
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public ArrayList<Group> getGroups() {
+        return groups;
     }
 }
