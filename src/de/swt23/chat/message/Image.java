@@ -27,7 +27,7 @@ public class Image extends Message {
         if (path.contains(".jpg") || path.contains(".jpeg")) {
             mimeType += "jpg";
         }
-        System.out.println(mimeType);
+
         return mimeType;
     }
 
@@ -35,7 +35,7 @@ public class Image extends Message {
         try {
             FileInputStream is = new FileInputStream(path);
 
-            System.out.println("Available bytes in the file: " + is.available());
+
             return is;
         } catch (Exception e) {
             e.getStackTrace();
