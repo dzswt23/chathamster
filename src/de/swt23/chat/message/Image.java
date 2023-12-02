@@ -12,15 +12,16 @@ import java.io.InputStream;
 public class Image extends Message {
     private final String path;
 
-    //Constructor
+    // Constructor for listing of the messages
     public Image(Entity entity, MessageDirection direction, String timeStamp, String path) {
         super(entity, direction, timeStamp);
-        this.path = path.toLowerCase();
+        this.path = path;
     }
 
+    // Constructor for outgoing messages
     public Image(Entity entity, MessageDirection direction, String path) {
         super(entity, direction);
-        this.path = path.toLowerCase();
+        this.path = path;
     }
 
     /**
@@ -52,7 +53,7 @@ public class Image extends Message {
         if (super.getDirection() == MessageDirection.OUT) {
             try {
                 return new FileInputStream(path);
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 System.out.println("An error occurred whilst processing the image: " + e.getMessage());
                 e.getStackTrace();
             }

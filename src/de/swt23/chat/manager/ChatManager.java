@@ -164,6 +164,7 @@ public class ChatManager {
         if (currentSession == null) {
             return false;
         }
+        // check if the user is trying to send a message to himself
         if (message.getEntity() instanceof Person) {
             if (currentSession.getUsername().equalsIgnoreCase(message.getEntity().getName())) {
                 return false;
@@ -183,7 +184,7 @@ public class ChatManager {
      * @param entity the receiver (can be a group or a person)
      * @return true if the message was sent successfully
      */
-    public boolean sendImageMessage(Image image, Entity entity) {
+    private boolean sendImageMessage(Image image, Entity entity) {
         try {
             if (entity instanceof Group group) {
                 for (Person person : group.getMembers()) {
@@ -208,7 +209,7 @@ public class ChatManager {
      * @param entity the receiver (can be a group or a person)
      * @return true if the message was sent successfully
      */
-    public boolean sendTextMessage(Text text, Entity entity) {
+    private boolean sendTextMessage(Text text, Entity entity) {
         try {
             if (entity instanceof Group) {
                 for (Person person : ((Group) entity).getMembers()) {

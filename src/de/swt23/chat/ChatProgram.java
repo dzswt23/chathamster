@@ -186,7 +186,7 @@ public class ChatProgram {
                     showGroups();
                     break;
                 case 4:
-                    addUsersToGroup();
+                    addUserToGroup();
                     break;
                 case 5:
                     removeUserFromGroup();
@@ -253,7 +253,7 @@ public class ChatProgram {
     /**
      * Adds users to a specified group.
      */
-    public void addUsersToGroup() {
+    public void addUserToGroup() {
         Group group = manager.getGroup(getUserInput("Please enter the name of the group: "));
         if (group == null) {
             System.out.println("This group does not exist!");

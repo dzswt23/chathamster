@@ -10,13 +10,14 @@ public abstract class Message {
     private final Entity entity;
     private String timeStamp;
 
-    //Constructor
+    // Constructor for listing of the messages
     public Message(Entity entity, MessageDirection direction, String timeStamp) {
         this.entity = entity;
         this.direction = direction;
         this.timeStamp = timeStamp;
     }
 
+    // Constructor for outgoing messages
     public Message(Entity entity, MessageDirection direction) {
         this.entity = entity;
         this.direction = direction;
