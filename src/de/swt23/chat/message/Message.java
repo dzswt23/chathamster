@@ -31,10 +31,6 @@ public abstract class Message {
         return direction;
     }
 
-    public String getTimeStamp() {
-        return timeStamp;
-    }
-
     public String toString() {
         String output = timeStamp + " | ";
         if (direction == MessageDirection.IN) {

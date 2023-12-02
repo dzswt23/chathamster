@@ -164,8 +164,8 @@ public class ChatManager {
         if (currentSession == null) {
             return false;
         }
-        if (message.getEntity() instanceof Person personReceiver) {
-            if (currentSession.getUsername().equalsIgnoreCase(((Person) message.getEntity()).getName())) {
+        if (message.getEntity() instanceof Person) {
+            if (currentSession.getUsername().equalsIgnoreCase(message.getEntity().getName())) {
                 return false;
             }
         }
@@ -218,25 +218,12 @@ public class ChatManager {
                     chatServer.sendTextMessage(currentSession.getUsername(), currentSession.getPassword(), person.getName(), text.getText());
                 }
             } else {
-                chatServer.sendTextMessage(currentSession.getUsername(), currentSession.getPassword(), ((Person) entity).getName(), text.getText());
+                chatServer.sendTextMessage(currentSession.getUsername(), currentSession.getPassword(), entity.getName(), text.getText());
             }
             return true;
         } catch (IOException e) {
             return false;
         }
-    }
-
-    /**
-     * get all existing group names
-     *
-     * @return a string array containing all the group names
-     */
-    public ArrayList<String> getGroupNames() {
-        ArrayList<String> groupNames = new ArrayList<>();
-        for (Group group : groups) {
-            groupNames.add(group.getName());
-        }
-        return groupNames;
     }
 
     /**
