@@ -2,16 +2,16 @@ package de.swt23.chat.manager;
 
 import de.swt23.chat.message.Image;
 import de.swt23.chat.message.Message;
+import de.swt23.chat.message.MessageDirection;
 import de.swt23.chat.message.Text;
+import de.swt23.chat.receiver.Entity;
 import de.swt23.chat.receiver.Group;
 import de.swt23.chat.receiver.Person;
-import de.swt23.chat.receiver.Receiver;
 import de.swt23.chat.session.Session;
 import de.thm.oop.chat.base.server.BasicTHMChatServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * manager class to manage connection to server and functionality
@@ -78,11 +78,8 @@ public class ChatManager {
      * @return true if the group was created successfully
      */
     public boolean addGroup(String name) {
-        if (getGroup(name) != null) {
-            return false;
-        }
-        // check if there is a person that has this name
-        if (getPerson(name) != null) {
+        // check if there is a group or person who has that name
+        if (getGroup(name) != null || getPerson(name) != null) {
             return false;
         }
         groups.add(new Group(name));
@@ -97,10 +94,7 @@ public class ChatManager {
      */
     public boolean removeGroup(String name) {
         Group group = getGroup(name);
-        if (group == null) {
-            return false;
-        }
-        return groups.remove(group);
+        return group != null && groups.remove(group);
     }
 
     /**
@@ -111,7 +105,7 @@ public class ChatManager {
      */
     public Group getGroup(String name) {
         for (Group group : groups) {
-            if (group.getGroupName().equalsIgnoreCase(name)) {
+            if (group.getName().equalsIgnoreCase(name)) {
                 return group;
             }
         }
@@ -121,47 +115,27 @@ public class ChatManager {
     /**
      * add a person to a group
      *
-     * @param username  username of the person that shall be added
-     * @param groupName name of the group that the person shall be added to
+     * @param person person that shall be added
+     * @param group  group that the person shall be added to
      * @return true if the person was added successfully
      */
-    public boolean addPersonToGroup(String username, String groupName) {
-        Person person = getPerson(username);
-        if (person == null) {
-            return false;
+    public boolean addPersonToGroup(Person person, Group group) {
+        if (!group.getMembers().contains(person)) {
+            group.addPerson(person);
+            return true;
         }
-        Group group = getGroup(groupName);
-        if (group == null) {
-            return false;
-        }
-        if (group.getMembers().contains(person)) {
-            return false;
-        }
-        group.addPerson(person);
-        return true;
+        return false;
     }
 
     /**
      * remove a person from a group
      *
-     * @param username  username of the person that shall be removed
-     * @param groupName name of the group that the person shall be removed from
+     * @param person person that shall be removed
+     * @param group  group that the person shall be removed from
      * @return true if the person was removed successfully
      */
-    public boolean removePersonFromGroup(String username, String groupName) {
-        Person person = getPerson(username);
-        if (person == null) {
-            return false;
-        }
-        Group group = getGroup(groupName);
-        if (group == null) {
-            return false;
-        }
-        if (!group.getMembers().contains(person)) {
-            return false;
-        }
-        group.removePerson(person);
-        return true;
+    public boolean removePersonFromGroup(Person person, Group group) {
+        return group.getMembers().contains(person) && group.removePerson(person);
     }
 
     /**
@@ -172,7 +146,7 @@ public class ChatManager {
      */
     public Person getPerson(String username) {
         for (Person person : getPeople()) {
-            if (person.getUsername().equalsIgnoreCase(username)) {
+            if (person.getName().equalsIgnoreCase(username)) {
                 return person;
             }
         }
@@ -182,7 +156,7 @@ public class ChatManager {
     /**
      * send a message (text or image) to a receiver (person or group)
      *
-     * @param message  the message to be sent
+     * @param message the message to be sent
      * @return true if the message was sent successfully
      */
     public boolean sendMessage(Message message) {
@@ -190,36 +164,36 @@ public class ChatManager {
         if (currentSession == null) {
             return false;
         }
-        if (message.getReceiver() instanceof Person) {
-            if (currentSession.getUsername().equalsIgnoreCase(((Person) message.getReceiver()).getUsername())) {
+        if (message.getEntity() instanceof Person personReceiver) {
+            if (currentSession.getUsername().equalsIgnoreCase(((Person) message.getEntity()).getName())) {
                 return false;
             }
         }
         if (message instanceof Image) {
-            return sendImageMessage((Image) message, message.getReceiver());
+            return sendImageMessage((Image) message, message.getEntity());
         } else {
-            return sendTextMessage((Text) message, message.getReceiver());
+            return sendTextMessage((Text) message, message.getEntity());
         }
     }
 
     /**
      * send an image message to a receiver (group or person)
      *
-     * @param image    the image that shall be sent
-     * @param receiver the receiver (can be a group or a person)
+     * @param image  the image that shall be sent
+     * @param entity the receiver (can be a group or a person)
      * @return true if the message was sent successfully
      */
-    public boolean sendImageMessage(Image image, Receiver receiver) {
+    public boolean sendImageMessage(Image image, Entity entity) {
         try {
-            if (receiver instanceof Group) {
-                for (Person person : ((Group) receiver).getMembers()) {
-                    if (currentSession.getUsername().equalsIgnoreCase(person.getUsername())) {
+            if (entity instanceof Group group) {
+                for (Person person : group.getMembers()) {
+                    if (currentSession.getUsername().equalsIgnoreCase(person.getName())) {
                         continue;
                     }
-                    chatServer.sendImageMessage(currentSession.getUsername(), currentSession.getPassword(), person.getUsername(), image.getMimeType(), image.getImageData());
+                    chatServer.sendImageMessage(currentSession.getUsername(), currentSession.getPassword(), person.getName(), image.getMimeType(), image.getImageData());
                 }
             } else {
-                chatServer.sendImageMessage(currentSession.getUsername(), currentSession.getPassword(), ((Person) receiver).getUsername(), image.getMimeType(), image.getImageData());
+                chatServer.sendImageMessage(currentSession.getUsername(), currentSession.getPassword(), entity.getName(), image.getMimeType(), image.getImageData());
             }
             return true;
         } catch (IOException e) {
@@ -230,21 +204,21 @@ public class ChatManager {
     /**
      * send an image message to a receiver (group or person)
      *
-     * @param text     the text that shall be sent
-     * @param receiver the receiver (can be a group or a person)
+     * @param text   the text that shall be sent
+     * @param entity the receiver (can be a group or a person)
      * @return true if the message was sent successfully
      */
-    public boolean sendTextMessage(Text text, Receiver receiver) {
+    public boolean sendTextMessage(Text text, Entity entity) {
         try {
-            if (receiver instanceof Group) {
-                for (Person person : ((Group) receiver).getMembers()) {
-                    if (currentSession.getUsername().equalsIgnoreCase(person.getUsername())) {
+            if (entity instanceof Group) {
+                for (Person person : ((Group) entity).getMembers()) {
+                    if (currentSession.getUsername().equalsIgnoreCase(person.getName())) {
                         continue;
                     }
-                    chatServer.sendTextMessage(currentSession.getUsername(), currentSession.getPassword(), person.getUsername(), text.getText());
+                    chatServer.sendTextMessage(currentSession.getUsername(), currentSession.getPassword(), person.getName(), text.getText());
                 }
             } else {
-                chatServer.sendTextMessage(currentSession.getUsername(), currentSession.getPassword(), ((Person) receiver).getUsername(), text.getText());
+                chatServer.sendTextMessage(currentSession.getUsername(), currentSession.getPassword(), ((Person) entity).getName(), text.getText());
             }
             return true;
         } catch (IOException e) {
@@ -260,23 +234,41 @@ public class ChatManager {
     public ArrayList<String> getGroupNames() {
         ArrayList<String> groupNames = new ArrayList<>();
         for (Group group : groups) {
-            groupNames.add(group.getGroupName());
+            groupNames.add(group.getName());
         }
         return groupNames;
     }
 
     /**
-     * get a list of the most recent 100 messages
+     * get a list of all messages
      *
-     * @return arraylist of the recent messages or null if the request failed
+     * @return arraylist of all messages or null if the request failed
      */
-    public ArrayList<String> getMessages() {
+    public ArrayList<Message> getMessages() {
         if (currentSession == null) {
             return null;
         }
         try {
-            // create an ArrayList of all messages newer than message with id 0
-            return new ArrayList<>(Arrays.asList(chatServer.getMessages(currentSession.getUsername(), currentSession.getPassword(), 0)));
+            ArrayList<Message> messages = new ArrayList<>();
+            for (String stringMessage : chatServer.getMessages(currentSession.getUsername(), currentSession.getPassword(), 0)) {
+                String[] messageContent = stringMessage.split("\\|");
+                Message message;
+                if (messageContent[4].equals("txt")) {
+                    if (messageContent[2].equals("in")) {
+                        message = new Text(getPerson(messageContent[3]), MessageDirection.IN, messageContent[1], messageContent[5]);
+                    } else {
+                        message = new Text(getPerson(messageContent[3]), MessageDirection.OUT, messageContent[1], messageContent[5]);
+                    }
+                } else {
+                    if (messageContent[2].equals("in")) {
+                        message = new Image(getPerson(messageContent[3]), MessageDirection.IN, messageContent[1], messageContent[7]);
+                    } else {
+                        message = new Image(getPerson(messageContent[3]), MessageDirection.OUT, messageContent[1], messageContent[7]);
+                    }
+                }
+                messages.add(message);
+            }
+            return messages;
         } catch (IOException e) {
             return null;
         }

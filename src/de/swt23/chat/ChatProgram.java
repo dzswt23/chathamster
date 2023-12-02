@@ -3,54 +3,90 @@ package de.swt23.chat;
 import de.swt23.chat.manager.ChatManager;
 import de.swt23.chat.message.Image;
 import de.swt23.chat.message.Message;
+import de.swt23.chat.message.MessageDirection;
 import de.swt23.chat.message.Text;
+import de.swt23.chat.receiver.Entity;
 import de.swt23.chat.receiver.Group;
 import de.swt23.chat.receiver.Person;
-import de.swt23.chat.receiver.Receiver;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ChatProgram {
-    private static Scanner scanner;
-    private static ChatManager manager;
-    private static boolean exitProgram = false;
-    private static String groupName;
+    private final Scanner scanner;
+    private final ChatManager manager;
+
+    public ChatProgram() {
+        scanner = new Scanner(System.in);
+        manager = new ChatManager();
+    }
+
+    /**
+     * The main entry point of the chat program.
+     */
+    public static void main(String[] args) {
+        ChatProgram program = new ChatProgram();
+        program.requestUserLogin();
+        program.handleProgramMenu();
+    }
 
     /**
      * Reads user input from the console.
+     *
      * @param prompt The prompt to display to the user.
      * @return The user's input.
      */
-    public static String getUserInput(String prompt) {
-        System.out.println(prompt);
+    public String getUserInput(String prompt) {
+        System.out.print(prompt);
         return scanner.nextLine().trim();
     }
 
     /**
-     * Closes the scanner used for user input.
+     * print a menu and get a selection by the user
+     *
+     * @param options the options the menu shall contain
+     * @return the choice the user made
      */
-    private static void closeScanner() {
-        scanner.close();
+    private int displayMenuAndGetChoice(String[] options) {
+        int number;
+        while (true) {
+            System.out.println("\nPlease enter a number:\n");
+            for (int i = 0; i < options.length; i++) {
+                System.out.println("\t" + (i + 1) + " = " + options[i]);
+            }
+            // catch if the user did not enter a number
+            try {
+                number = Integer.parseInt(getUserInput("\nYour choice: "));
+                // check if the number is valid
+                if (number >= 1 && number <= options.length) {
+                    break;
+                } else {
+                    System.out.println("Invalid input, please enter a number from 1 - " + options.length);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input type, please enter a number from 1 - " + options.length);
+            }
+        }
+        return number;
     }
 
     /**
      * Requests user login credentials until a valid login is provided.
      */
-    public static void requestUserLogin() {
-        System.out.println("*Welcome to the chat program of group H!*\n");
+    public void requestUserLogin() {
+        System.out.println("* Welcome to the chat program of group H! *\n");
 
         boolean validLogin = false;
         while (!validLogin) {
-            String username = getUserInput("Enter your username:");
-            String password = getUserInput("Enter your password:");
+            String username = getUserInput("Enter your username: ");
+            String password = getUserInput("Enter your password: ");
 
             if (manager.login(username, password)) {
-                System.out.println("Welcome " + username + "\n\n");
+                System.out.println("Welcome " + username + ".");
                 validLogin = true;
             } else {
-                System.out.println("Incorrect login details\n\n");
+                System.out.println("Incorrect login details!");
             }
         }
     }
@@ -58,38 +94,37 @@ public class ChatProgram {
     /**
      * Handles the main program menu, allowing users to perform various actions.
      */
-    public static void handleProgramMenu() {
-        String letter;
-
+    public void handleProgramMenu() {
+        boolean exitProgram = false;
         while (!exitProgram) {
-            System.out.println("*Program menu*\n");
-            System.out.println("Choose between:");
-            System.out.println("    A = List of all users");
-            System.out.println("    B = List of all messages");
-            System.out.println("    C = Manage groups");
-            System.out.println("    D = Send message");
-            System.out.println("    E = Exit program menu");
-
-            letter = getUserInput("Your choice:").toLowerCase();
-
-            switch (letter) {
-                case "a":
+            int selection = displayMenuAndGetChoice(new String[]{
+                "Get a list of all users",
+                "Get a list of all messages",
+                "Manage your groups",
+                "Send a message",
+                "Exit"
+            });
+            switch (selection) {
+                case 1:
                     listOfAllUsers();
                     break;
-                case "b":
-                    listOfAllMessages();
+                case 2:
+                    listAllMessages();
                     break;
-                case "c":
+                case 3:
                     manageGroups();
                     break;
-                case "d":
+                case 4:
                     sendMessage();
                     break;
-                case "e":
-                    exitProgramMenu();
+                case 5:
+                    scanner.close();
+                    System.out.println("See you next time!");
+                    exitProgram = true;
                     break;
                 default:
-                    System.out.println("Invalid selection. Please re-enter: A, B, C, D, E");
+                    System.out.println("Invalid selection!");
+                    handleProgramMenu();
                     break;
             }
         }
@@ -98,73 +133,70 @@ public class ChatProgram {
     /**
      * Displays a list of all users in the chat.
      */
-    public static void listOfAllUsers() {
+    public void listOfAllUsers() {
         System.out.println("List of all users:");
         for (Person person : manager.getPeople()) {
-            System.out.println("- " + person.getUsername());
+            System.out.println("- " + person.getName());
         }
     }
 
     /**
      * Displays a list of all messages in the chat.
      */
-    public static void listOfAllMessages() {
+    public void listAllMessages() {
         System.out.println("List of all messages:");
-        ArrayList<String> messages = manager.getMessages();
+        ArrayList<Message> messages = manager.getMessages();
         if (messages == null) {
-            System.out.println("An error occurred while loading your messages");
+            System.out.println("An error occurred while loading your messages.");
             handleProgramMenu();
+            return;
         }
         if (messages.isEmpty()) {
-            System.out.println("You did not receive messages yet");
+            System.out.println("You did not receive messages yet.");
             handleProgramMenu();
+            return;
         }
-        for (String message : messages) {
-            System.out.println("- " + message);
+        for (Message message : messages) {
+            System.out.println(message);
         }
     }
 
     /**
      * Manages various group-related actions, such as creating, deleting, and displaying groups.
      */
-    public static void manageGroups() {
-        System.out.println("Manage groups:");
-
-        boolean group = false;
-
-        while(!group) {
-            System.out.println("Choose between:");
-            System.out.println("    A = Create group");
-            System.out.println("    B = Delete group");
-            System.out.println("    C = Show groups");
-            System.out.println("    D = Add users to group");
-            System.out.println("    E = Remove user from group");
-            System.out.println("    F = Back to main menu");
-
-            String manageGroups = getUserInput("Your choice:").toLowerCase();
-
-            switch (manageGroups) {
-                case "a":
+    public void manageGroups() {
+        boolean backToMainMenu = false;
+        while (!backToMainMenu) {
+            int selection = displayMenuAndGetChoice(new String[]{
+                "Create a new group",
+                "Delete an existing group",
+                "Show all created groups and their members",
+                "Add a person to a group",
+                "Remove a person from a group",
+                "Go back to the main menu"
+            });
+            switch (selection) {
+                case 1:
                     createGroup();
                     break;
-                case "b":
+                case 2:
                     deleteGroup();
                     break;
-                case "c":
+                case 3:
                     showGroups();
                     break;
-                case "d":
+                case 4:
                     addUsersToGroup();
                     break;
-                case "e":
+                case 5:
                     removeUserFromGroup();
                     break;
-                case "f":
-                    group = true;
+                case 6:
+                    backToMainMenu = true;
                     break;
-
                 default:
-                    System.out.println("Invalid selection. Please re-enter: A, B, C, D, E, F");
+                    System.out.println("Invalid selection!");
+                    manageGroups();
                     break;
             }
         }
@@ -173,45 +205,46 @@ public class ChatProgram {
     /**
      * Creates a new group with a specified name.
      */
-    public static void createGroup() {
-        groupName = getUserInput("Enter group name");
+    public void createGroup() {
+        String groupName = getUserInput("Please enter a name for the group: ");
         if (manager.addGroup(groupName)) {
-            System.out.println("The group " + groupName + " was added successfully");
+            System.out.println("The group " + groupName + " was added successfully.");
         } else {
-            System.out.println("The group could not be created");
+            System.out.println("There is already a group or person called " + groupName + "!");
         }
     }
 
     /**
      * Deletes an existing group with a specified name.
      */
-    public static void deleteGroup() {
-        groupName = getUserInput("Enter group name");
+    public void deleteGroup() {
+        String groupName = getUserInput("Please enter the name of the group: ");
         if (manager.removeGroup(groupName)) {
-            System.out.println("The group " + groupName + " was removed successfully");
+            System.out.println("The group " + groupName + " was removed successfully.");
         } else {
-            System.out.println("The group could not be removed");
+            System.out.println("The group could not be removed!");
         }
     }
 
     /**
      * Displays a list of all created groups and their members.
      */
-    public static void showGroups() {
+    public void showGroups() {
         System.out.println("\nOutput list group\n");
         if (manager.getGroups().isEmpty()) {
-            System.out.println("You have not created a group yet");
+            System.out.println("You have not created a group yet.");
             manageGroups();
+            return;
         }
         for (Group group : manager.getGroups()) {
-            System.out.println("Group name: " + group.getGroupName());
+            System.out.println("Group name: " + group.getName());
             if (group.getMembers().isEmpty()) {
-                System.out.println("This group is empty\n");
-                break;
+                System.out.println("This group is empty.\n");
+                continue;
             }
             System.out.println("Members:");
             for (Person member : group.getMembers()) {
-                System.out.println("- " + member.getUsername());
+                System.out.println("- " + member.getName());
             }
             System.out.println("\n");
         }
@@ -220,80 +253,83 @@ public class ChatProgram {
     /**
      * Adds users to a specified group.
      */
-    public static void addUsersToGroup() {
-        Group group = manager.getGroup(getUserInput("Enter group name"));
+    public void addUsersToGroup() {
+        Group group = manager.getGroup(getUserInput("Please enter the name of the group: "));
         if (group == null) {
-            System.out.println("This group does not exist");
+            System.out.println("This group does not exist!");
             manageGroups();
+            return;
         }
-        Person person = manager.getPerson(getUserInput("Enter name of the user"));
+        Person person = manager.getPerson(getUserInput("Please enter the name of the user: "));
         if (person == null) {
-            System.out.println("This person does not exist");
+            System.out.println("This person does not exist!");
             manageGroups();
+            return;
         }
-        if (manager.addPersonToGroup(person.getUsername(), group.getGroupName())) {
-            System.out.println(person.getUsername() + " was added successfully to " + group.getGroupName());
+        if (manager.addPersonToGroup(person, group)) {
+            System.out.println(person.getName() + " was added successfully to " + group.getName() + ".");
         } else {
-            System.out.println(person.getUsername() + " could not be added to " + group.getGroupName());
+            System.out.println(person.getName() + " could not be added to " + group.getName() + ".");
         }
     }
 
     /**
      * Removes a user from a specified group.
      */
-    public static void removeUserFromGroup() {
-        Group group = manager.getGroup(getUserInput("Enter group name"));
+    public void removeUserFromGroup() {
+        Group group = manager.getGroup(getUserInput("Please enter the name of the group: "));
         if (group == null) {
-            System.out.println("This group does not exist");
+            System.out.println("This group does not exist!");
             manageGroups();
+            return;
         }
-        Person person = manager.getPerson(getUserInput("Enter name of the user"));
+        Person person = manager.getPerson(getUserInput("Please enter the name of the user: "));
         if (person == null) {
-            System.out.println("This person does not exist");
+            System.out.println("This person does not exist!");
             manageGroups();
+            return;
         }
-        if (manager.removePersonFromGroup(person.getUsername(), group.getGroupName())) {
-            System.out.println(person.getUsername() + " was removed successfully from " + group.getGroupName());
+        if (manager.removePersonFromGroup(person, group)) {
+            System.out.println(person.getName() + " was removed successfully from " + group.getName() + ".");
         } else {
-            System.out.println(person.getUsername() + " could not be removed from " + group.getGroupName());
+            System.out.println(person.getName() + " could not be removed from " + group.getName() + ".");
         }
     }
 
     /**
      * Initiates the process of sending a message to a person or group.
      */
-    public static void sendMessage() {
-        String input = getUserInput("Recipient of the message(group or person): \n        Or go back to the main menu with C");
-        Receiver receiver = manager.getPerson(input);
-        if (receiver == null) {
-            receiver = manager.getGroup(input);
-            if (receiver == null) {
-                System.out.println("There is no group or person called " + input);
+    public void sendMessage() {
+        String input = getUserInput("Please enter the name of the message recipient (username or group name): ");
+        Entity entity = manager.getPerson(input);
+        if (entity == null) {
+            entity = manager.getGroup(input);
+            if (entity == null) {
+                System.out.println("There is no group or person called " + input + "!");
                 handleProgramMenu();
+                return;
             }
         }
 
-        boolean message = false;
-
-        while(!message){
-            System.out.println("Choose between:");
-            System.out.println("    A = Image message");
-            System.out.println("    B = Text message");
-            System.out.println("    C = Back to main menu");
-
-            String imageOrText = getUserInput("Your choice:").toLowerCase();
-            switch (imageOrText) {
-                case "a":
-                    imageMessage(receiver);
+        boolean backToMainMenu = false;
+        while (!backToMainMenu) {
+            int selection = displayMenuAndGetChoice(new String[]{
+                "Send an image",
+                "Send a text",
+                "Go back to the main menu"
+            });
+            switch (selection) {
+                case 1:
+                    sendImageMessage(entity);
                     break;
-                case "b":
-                    textMessage(receiver);
+                case 2:
+                    sendTextMessage(entity);
                     break;
-                case "c":
-                    message = true;
+                case 3:
+                    backToMainMenu = true;
                     break;
                 default:
-                    System.out.println("Invalid selection. Please re-enter: A, B, C");
+                    System.out.println("Invalid selection!");
                     break;
             }
         }
@@ -301,70 +337,51 @@ public class ChatProgram {
 
     /**
      * Sends an image message to the specified receiver.
-     * @param receiver The receiver of the image message.
+     *
+     * @param entity The receiver of the image message.
      */
-    public static void imageMessage(Receiver receiver) {
+    public void sendImageMessage(Entity entity) {
         boolean validImagePath = false;
         String imagePath = null;
         while (!validImagePath) {
-            imagePath = getUserInput("Enter path of the image:");
-            if (isValidImagePath(imagePath)) {
+            imagePath = getUserInput("Enter path of the image: ");
+
+            // remove " from the start and end of the message
+            if (imagePath.startsWith("\"")) {
+                imagePath = imagePath.substring(1, imagePath.length() - 1);
+            }
+            if (imagePath.endsWith("\"")) {
+                imagePath = imagePath.substring(0, imagePath.length() - 2);
+            }
+
+            // check if the provided path exists AND that it is not a directory
+            File file = new File(imagePath);
+            if (file.exists() && !file.isDirectory()) {
                 validImagePath = true;
             } else {
-                System.out.println("Invalid image path. Please enter a valid path.");
+                System.out.println("Invalid image path. Please enter a valid path!");
             }
         }
 
-        Message message = new Image(receiver, imagePath);
+        Message message = new Image(entity, MessageDirection.OUT, imagePath);
         if (manager.sendMessage(message)) {
-            System.out.println("Message sent successfully");
+            System.out.println("Message sent successfully.");
         } else {
-            System.out.println("The message was not sent");
+            System.out.println("The message was not sent!");
         }
-    }
-
-    /**
-     * Method to check file path.
-     */
-    private static boolean isValidImagePath(String path) {
-        File file = new File(path);
-        return file.exists() && !file.isDirectory();
     }
 
     /**
      * Sends a text message to the specified receiver.
-     * @param receiver The receiver of the text message.
+     *
+     * @param entity The receiver of the text message.
      */
-    public static void textMessage(Receiver receiver) {
-        Message message = new Text(receiver, getUserInput("Content of the message:"));
+    public void sendTextMessage(Entity entity) {
+        Message message = new Text(entity, MessageDirection.OUT, getUserInput("Content of the message: "));
         if (manager.sendMessage(message)) {
-            System.out.println("Message sent successfully");
+            System.out.println("Message sent successfully.");
         } else {
-            System.out.println("The message was not sent");
-        }
-    }
-
-    /**
-     * Exits the program menu, setting the exitProgram flag to true.
-     * @return The value of exitProgram (true).
-     */
-    public static boolean exitProgramMenu() {
-        System.out.println("See you next time");
-        exitProgram = true;
-        return exitProgram;
-    }
-
-    /**
-     * The main entry point of the chat program.
-     */
-    public static void main(String[] args) {
-        scanner = new Scanner(System.in);
-        manager = new ChatManager();
-        try {
-            requestUserLogin();
-            handleProgramMenu();
-        } finally {
-            closeScanner();
+            System.out.println("The message was not sent!");
         }
     }
 }
