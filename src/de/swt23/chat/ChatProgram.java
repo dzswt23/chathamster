@@ -124,7 +124,6 @@ public class ChatProgram {
                     break;
                 default:
                     System.out.println("Invalid selection!");
-                    handleProgramMenu();
                     break;
             }
         }
@@ -148,12 +147,10 @@ public class ChatProgram {
         ArrayList<Message> messages = manager.getMessages();
         if (messages == null) {
             System.out.println("An error occurred while loading your messages.");
-            handleProgramMenu();
             return;
         }
         if (messages.isEmpty()) {
             System.out.println("You did not receive messages yet.");
-            handleProgramMenu();
             return;
         }
         for (Message message : messages) {
@@ -196,7 +193,6 @@ public class ChatProgram {
                     break;
                 default:
                     System.out.println("Invalid selection!");
-                    manageGroups();
                     break;
             }
         }
@@ -230,10 +226,8 @@ public class ChatProgram {
      * Displays a list of all created groups and their members.
      */
     public void showGroups() {
-        System.out.println("\nOutput list group\n");
         if (manager.getGroups().isEmpty()) {
             System.out.println("You have not created a group yet.");
-            manageGroups();
             return;
         }
         for (Group group : manager.getGroups()) {
@@ -257,13 +251,11 @@ public class ChatProgram {
         Group group = manager.getGroup(getUserInput("Please enter the name of the group: "));
         if (group == null) {
             System.out.println("This group does not exist!");
-            manageGroups();
             return;
         }
         Person person = manager.getPerson(getUserInput("Please enter the name of the user: "));
         if (person == null) {
             System.out.println("This person does not exist!");
-            manageGroups();
             return;
         }
         if (manager.addPersonToGroup(person, group)) {
@@ -280,13 +272,11 @@ public class ChatProgram {
         Group group = manager.getGroup(getUserInput("Please enter the name of the group: "));
         if (group == null) {
             System.out.println("This group does not exist!");
-            manageGroups();
             return;
         }
         Person person = manager.getPerson(getUserInput("Please enter the name of the user: "));
         if (person == null) {
             System.out.println("This person does not exist!");
-            manageGroups();
             return;
         }
         if (manager.removePersonFromGroup(person, group)) {
@@ -306,7 +296,6 @@ public class ChatProgram {
             entity = manager.getGroup(input);
             if (entity == null) {
                 System.out.println("There is no group or person called " + input + "!");
-                handleProgramMenu();
                 return;
             }
         }
