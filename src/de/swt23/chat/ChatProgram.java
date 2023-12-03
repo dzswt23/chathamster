@@ -106,7 +106,7 @@ public class ChatProgram {
             });
             switch (selection) {
                 case 1:
-                    listOfAllUsers();
+                    listAllUsers();
                     break;
                 case 2:
                     listAllMessages();
@@ -132,7 +132,7 @@ public class ChatProgram {
     /**
      * Displays a list of all users in the chat.
      */
-    public void listOfAllUsers() {
+    public void listAllUsers() {
         System.out.println("List of all users:");
         for (Person person : manager.getPeople()) {
             System.out.println("- " + person.getName());
