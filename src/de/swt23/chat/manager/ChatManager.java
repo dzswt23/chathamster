@@ -171,9 +171,9 @@ public class ChatManager {
             }
         }
         if (message instanceof Image) {
-            return sendImageMessage((Image) message, message.getEntity());
+            return sendImageMessage((Image) message);
         } else {
-            return sendTextMessage((Text) message, message.getEntity());
+            return sendTextMessage((Text) message);
         }
     }
 
@@ -181,11 +181,11 @@ public class ChatManager {
      * send an image message to a receiver (group or person)
      *
      * @param image  the image that shall be sent
-     * @param entity the receiver (can be a group or a person)
      * @return true if the message was sent successfully
      */
-    private boolean sendImageMessage(Image image, Entity entity) {
+    private boolean sendImageMessage(Image image) {
         try {
+            Entity entity = image.getEntity();
             if (entity instanceof Group group) {
                 for (Person person : group.getMembers()) {
                     if (currentSession.getUsername().equalsIgnoreCase(person.getName())) {
@@ -206,11 +206,11 @@ public class ChatManager {
      * send an image message to a receiver (group or person)
      *
      * @param text   the text that shall be sent
-     * @param entity the receiver (can be a group or a person)
      * @return true if the message was sent successfully
      */
-    private boolean sendTextMessage(Text text, Entity entity) {
+    private boolean sendTextMessage(Text text) {
         try {
+            Entity entity = text.getEntity();
             if (entity instanceof Group) {
                 for (Person person : ((Group) entity).getMembers()) {
                     if (currentSession.getUsername().equalsIgnoreCase(person.getName())) {
