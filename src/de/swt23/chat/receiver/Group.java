@@ -33,6 +33,16 @@ public class Group extends Entity {
         return members.remove(member);
     }
 
+    /**
+     * check if the group contains a person
+     *
+     * @param member the person whose membership is checked
+     * @return true if the person is a member of the group
+     */
+    public boolean containsPerson(Person member) {
+        return members.contains(member);
+    }
+
     public ArrayList<Person> getMembers() {
         return members;
     }

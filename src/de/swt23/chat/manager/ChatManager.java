@@ -120,7 +120,7 @@ public class ChatManager {
      * @return true if the person was added successfully
      */
     public boolean addPersonToGroup(Person person, Group group) {
-        if (!group.getMembers().contains(person)) {
+        if (!group.containsPerson(person)) {
             group.addPerson(person);
             return true;
         }
@@ -135,7 +135,7 @@ public class ChatManager {
      * @return true if the person was removed successfully
      */
     public boolean removePersonFromGroup(Person person, Group group) {
-        return group.getMembers().contains(person) && group.removePerson(person);
+        return group.containsPerson(person) && group.removePerson(person);
     }
 
     /**
