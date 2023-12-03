@@ -337,6 +337,7 @@ public class ChatProgram {
 
     /**
      * Sends an image message to the specified receiver.
+     * https://docs.oracle.com/javase/8/docs/api/java/io/File.html
      *
      * @param entity The receiver of the image message.
      */
