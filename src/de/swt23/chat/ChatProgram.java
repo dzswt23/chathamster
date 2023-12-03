@@ -49,7 +49,6 @@ public class ChatProgram {
      * @return the choice the user made
      */
     private int displayMenuAndGetChoice(String[] options) {
-        int number;
         while (true) {
             System.out.println("\nPlease enter a number:\n");
             for (int i = 0; i < options.length; i++) {
@@ -57,10 +56,10 @@ public class ChatProgram {
             }
             // catch if the user did not enter a number
             try {
-                number = Integer.parseInt(getUserInput("\nYour choice: "));
+                int number = Integer.parseInt(getUserInput("\nYour choice: "));
                 // check if the number is valid
                 if (number >= 1 && number <= options.length) {
-                    break;
+                    return number;
                 } else {
                     System.out.println("Invalid input, please enter a number from 1 - " + options.length);
                 }
@@ -68,7 +67,6 @@ public class ChatProgram {
                 System.out.println("Invalid input type, please enter a number from 1 - " + options.length);
             }
         }
-        return number;
     }
 
     /**
