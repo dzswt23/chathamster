@@ -1,30 +1,34 @@
 package de.swt23.chat.message;
 
+import de.swt23.chat.receiver.Entity;
 
-import de.swt23.chat.receiver.Receiver;
-
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+/**
+ * the image class inherits from message and provides information and functionality for an image message
+ */
 public class Image extends Message {
+    private final String path;
 
-    //Attributes
-    private String path;
-
-
-    //Constructor
-    public Image(Receiver receiver, MessageDirection direction, String timeStamp, String path) {
-        super(receiver, direction, timeStamp);
-        this.path = path.toLowerCase();
+    // Constructor for listing of the messages
+    public Image(Entity entity, MessageDirection direction, String timeStamp, String path) {
+        super(entity, direction, timeStamp);
+        this.path = path;
     }
 
-    public Image(Receiver receiver, MessageDirection direction, String path) {
-        super(receiver, direction);
-        this.path = path.toLowerCase();
+    // Constructor for outgoing messages
+    public Image(Entity entity, MessageDirection direction, String path) {
+        super(entity, direction);
+        this.path = path;
     }
 
-    //Methods
+    /**
+     * get the type of the file that was provided
+     *
+     * @return a string of the type of the image
+     */
     public String getMimeType() {
         if (super.getDirection() == MessageDirection.OUT) {
             String mimeType = "image/";
@@ -34,20 +38,23 @@ public class Image extends Message {
             if (path.contains(".jpg") || path.contains(".jpeg")) {
                 mimeType += "jpg";
             }
-
             return mimeType;
 
         }
         return null;
     }
 
+    /**
+     * create an input stream to read the data of the image
+     *
+     * @return open FileInputStream
+     */
     public InputStream getImageData() {
-        if (super.getDirection() == MessageDirection.IN) {
+        if (super.getDirection() == MessageDirection.OUT) {
             try {
-                FileInputStream is = new FileInputStream(path);
-
-                return is;
+                return new FileInputStream(path);
             } catch (Exception e) {
+                System.out.println("An error occurred whilst processing the image: " + e.getMessage());
                 e.getStackTrace();
             }
         }

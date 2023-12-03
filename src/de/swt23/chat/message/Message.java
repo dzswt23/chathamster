@@ -1,47 +1,43 @@
 package de.swt23.chat.message;
 
-import de.swt23.chat.receiver.Receiver;
+import de.swt23.chat.receiver.Entity;
 
-
+/**
+ * a message will be made an image or a text
+ */
 public abstract class Message {
-    private MessageDirection direction;
-    //Attribute
-    private Receiver receiver;
-
+    private final MessageDirection direction;
+    private final Entity entity;
     private String timeStamp;
 
-    //Constructor
-    public Message(Receiver receiver, MessageDirection direction, String timeStamp) {
-        this.receiver = receiver;
+    // Constructor for listing of the messages
+    public Message(Entity entity, MessageDirection direction, String timeStamp) {
+        this.entity = entity;
         this.direction = direction;
         this.timeStamp = timeStamp;
     }
 
-    public Message(Receiver receiver, MessageDirection direction) {
-        this.receiver = receiver;
+    // Constructor for outgoing messages
+    public Message(Entity entity, MessageDirection direction) {
+        this.entity = entity;
         this.direction = direction;
 
     }
 
-    //Methods
-    public Receiver getReceiver() {
-        return receiver;
+    public Entity getEntity() {
+        return entity;
     }
 
     public MessageDirection getDirection() {
         return direction;
     }
 
-    public String getTimeStamp() {
-        return timeStamp;
-    }
-
     public String toString() {
         String output = timeStamp + " | ";
         if (direction == MessageDirection.IN) {
-            output = output + receiver + " -> mir: ";
+            output = output + entity + " -> me: ";
         } else {
-            output = output + "ich -> " + receiver + ": ";
+            output = output + "Me -> " + entity + ": ";
         }
         return output;
     }
