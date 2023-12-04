@@ -39,6 +39,7 @@ public class ChatManager {
         try {
             // throws exception if username & password are not correct
             chatServer.getUsers(username, password);
+            // store current login details in currentSession
             currentSession = new Session(username, password);
             return true;
         } catch (IOException e) {
@@ -52,6 +53,7 @@ public class ChatManager {
      * @return arraylist of registered people
      */
     public ArrayList<Person> getPeople() {
+        // check if the user is logged in already
         if (currentSession == null) {
             return null;
         }
@@ -61,12 +63,13 @@ public class ChatManager {
         }
         try {
             // get user list from server
-            String[] usernames = chatServer.getUsers(currentSession.getUsername(), currentSession.getPassword());
-            for (String username : usernames) {
+            for (String username : chatServer.getUsers(currentSession.getUsername(), currentSession.getPassword())) {
+                // cache a new person with this username
                 people.add(new Person(username));
             }
             return people;
         } catch (IOException e) {
+            // error indicating there is a problem with the server
             throw new RuntimeException(e);
         }
     }
@@ -82,6 +85,7 @@ public class ChatManager {
         if (getGroup(name) != null || getPerson(name) != null) {
             return false;
         }
+        // create a new group and add it to the group list
         groups.add(new Group(name));
         return true;
     }
@@ -94,6 +98,7 @@ public class ChatManager {
      */
     public boolean removeGroup(String name) {
         Group group = getGroup(name);
+        // true if the group is not null (=group exists) and if the group was removed successfully
         return group != null && groups.remove(group);
     }
 
@@ -105,6 +110,7 @@ public class ChatManager {
      */
     public Group getGroup(String name) {
         for (Group group : groups) {
+            // check if the names match
             if (group.getName().equalsIgnoreCase(name)) {
                 return group;
             }
@@ -120,7 +126,9 @@ public class ChatManager {
      * @return true if the person was added successfully
      */
     public boolean addPersonToGroup(Person person, Group group) {
+        // check if the person is not yet a member in this group
         if (!group.containsPerson(person)) {
+            // add the person to the group
             group.addPerson(person);
             return true;
         }
@@ -135,7 +143,7 @@ public class ChatManager {
      * @return true if the person was removed successfully
      */
     public boolean removePersonFromGroup(Person person, Group group) {
-        return group.containsPerson(person) && group.removePerson(person);
+        return group.removePerson(person);
     }
 
     /**
@@ -146,6 +154,7 @@ public class ChatManager {
      */
     public Person getPerson(String username) {
         for (Person person : getPeople()) {
+            // check if the names match
             if (person.getName().equalsIgnoreCase(username)) {
                 return person;
             }
@@ -170,6 +179,7 @@ public class ChatManager {
                 return false;
             }
         }
+        // check if the message is an image or a text
         if (message instanceof Image) {
             return sendImageMessage((Image) message);
         } else {
@@ -186,8 +196,11 @@ public class ChatManager {
     private boolean sendImageMessage(Image image) {
         try {
             Entity entity = image.getEntity();
+            // check if the entity (=receiver) is a group or a person
             if (entity instanceof Group group) {
+                // send the message to all group members
                 for (Person person : group.getMembers()) {
+                    // check if the current user himself is a member of the group
                     if (currentSession.getUsername().equalsIgnoreCase(person.getName())) {
                         continue;
                     }
@@ -211,8 +224,11 @@ public class ChatManager {
     private boolean sendTextMessage(Text text) {
         try {
             Entity entity = text.getEntity();
+            // check if the entity (=receiver) is a group or a person
             if (entity instanceof Group) {
+                // send the message to all group members
                 for (Person person : ((Group) entity).getMembers()) {
+                    // check if the current user himself is a member of the group
                     if (currentSession.getUsername().equalsIgnoreCase(person.getName())) {
                         continue;
                     }
@@ -233,21 +249,27 @@ public class ChatManager {
      * @return arraylist of all messages or null if the request failed
      */
     public ArrayList<Message> getMessages() {
+        // check if the user is logged in
         if (currentSession == null) {
             return null;
         }
         try {
             ArrayList<Message> messages = new ArrayList<>();
+            // get a list of all messages from the server
             for (String stringMessage : chatServer.getMessages(currentSession.getUsername(), currentSession.getPassword(), 0)) {
+                // split the message by the sign |
                 String[] messageContent = stringMessage.split("\\|");
                 Message message;
+                // check if the message is a text message or an image message (=link to the image)
                 if (messageContent[4].equals("txt")) {
+                    // check whether the message was sent or received by the current user
                     if (messageContent[2].equals("in")) {
                         message = new Text(getPerson(messageContent[3]), MessageDirection.IN, messageContent[1], messageContent[5]);
                     } else {
                         message = new Text(getPerson(messageContent[3]), MessageDirection.OUT, messageContent[1], messageContent[5]);
                     }
                 } else {
+                    // check whether the message was sent or received by the current user
                     if (messageContent[2].equals("in")) {
                         message = new Image(getPerson(messageContent[3]), MessageDirection.IN, messageContent[1], messageContent[7]);
                     } else {
