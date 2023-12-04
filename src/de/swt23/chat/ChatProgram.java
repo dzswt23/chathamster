@@ -51,11 +51,13 @@ public class ChatProgram {
     private int displayMenuAndGetChoice(String[] options) {
         while (true) {
             System.out.println("\nPlease enter a number:\n");
+            // print the menu
             for (int i = 0; i < options.length; i++) {
                 System.out.println("\t" + (i + 1) + " = " + options[i]);
             }
             // catch if the user did not enter a number
             try {
+                // get the user input
                 int number = Integer.parseInt(getUserInput("\nYour choice: "));
                 // check if the number is valid
                 if (number >= 1 && number <= options.length) {
@@ -345,7 +347,12 @@ public class ChatProgram {
             // check if the provided path exists AND that it is not a directory
             File file = new File(imagePath);
             if (file.exists() && !file.isDirectory()) {
-                validImagePath = true;
+                // check if the image is smaller than 1MB
+                if ((file.length() / 1024) <= 1024) {
+                    validImagePath = true;
+                } else {
+                    System.out.println("The selected image is bigger than 1MB!");
+                }
             } else {
                 System.out.println("Invalid image path. Please enter a valid path!");
             }
