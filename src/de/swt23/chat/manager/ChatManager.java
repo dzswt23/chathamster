@@ -190,7 +190,7 @@ public class ChatManager {
     /**
      * send an image message to a receiver (group or person)
      *
-     * @param image  the image that shall be sent
+     * @param image the image that shall be sent
      * @return true if the message was sent successfully
      */
     private boolean sendImageMessage(Image image) {
@@ -218,7 +218,7 @@ public class ChatManager {
     /**
      * send an image message to a receiver (group or person)
      *
-     * @param text   the text that shall be sent
+     * @param text the text that shall be sent
      * @return true if the message was sent successfully
      */
     private boolean sendTextMessage(Text text) {

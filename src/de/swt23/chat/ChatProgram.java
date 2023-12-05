@@ -98,11 +98,11 @@ public class ChatProgram {
         boolean exitProgram = false;
         while (!exitProgram) {
             int selection = displayMenuAndGetChoice(new String[]{
-                "Get a list of all users",
-                "Get a list of all messages",
-                "Manage your groups",
-                "Send a message",
-                "Exit"
+                    "Get a list of all users",
+                    "Get a list of all messages",
+                    "Manage your groups",
+                    "Send a message",
+                    "Exit"
             });
             switch (selection) {
                 case 1:
@@ -165,12 +165,12 @@ public class ChatProgram {
         boolean backToMainMenu = false;
         while (!backToMainMenu) {
             int selection = displayMenuAndGetChoice(new String[]{
-                "Create a new group",
-                "Delete an existing group",
-                "Show all created groups and their members",
-                "Add a person to a group",
-                "Remove a person from a group",
-                "Go back to the main menu"
+                    "Create a new group",
+                    "Delete an existing group",
+                    "Show all created groups and their members",
+                    "Add a person to a group",
+                    "Remove a person from a group",
+                    "Go back to the main menu"
             });
             switch (selection) {
                 case 1:
@@ -303,9 +303,9 @@ public class ChatProgram {
         boolean backToMainMenu = false;
         while (!backToMainMenu) {
             int selection = displayMenuAndGetChoice(new String[]{
-                "Send an image",
-                "Send a text",
-                "Go back to the main menu"
+                    "Send an image",
+                    "Send a text",
+                    "Go back to the main menu"
             });
             switch (selection) {
                 case 1:
