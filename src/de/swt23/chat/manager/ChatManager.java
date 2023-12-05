@@ -11,6 +11,8 @@ import de.swt23.chat.session.Session;
 import de.thm.oop.chat.base.server.BasicTHMChatServer;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -255,31 +257,36 @@ public class ChatManager {
         }
         try {
             ArrayList<Message> messages = new ArrayList<>();
+            // formats for the timestamp
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
             // get a list of all messages from the server
             for (String stringMessage : chatServer.getMessages(currentSession.getUsername(), currentSession.getPassword(), 0)) {
                 // split the message by the sign |
                 String[] messageContent = stringMessage.split("\\|");
                 Message message;
+                // transforming the timestamp into the new format
+                String timestamp = outputFormat.format(inputFormat.parse(messageContent[1]));
                 // check if the message is a text message or an image message (=link to the image)
                 if (messageContent[4].equals("txt")) {
                     // check whether the message was sent or received by the current user
                     if (messageContent[2].equals("in")) {
-                        message = new Text(getPerson(messageContent[3]), MessageDirection.IN, messageContent[1], messageContent[5]);
+                        message = new Text(getPerson(messageContent[3]), MessageDirection.IN, timestamp, messageContent[5]);
                     } else {
-                        message = new Text(getPerson(messageContent[3]), MessageDirection.OUT, messageContent[1], messageContent[5]);
+                        message = new Text(getPerson(messageContent[3]), MessageDirection.OUT, timestamp, messageContent[5]);
                     }
                 } else {
                     // check whether the message was sent or received by the current user
                     if (messageContent[2].equals("in")) {
-                        message = new Image(getPerson(messageContent[3]), MessageDirection.IN, messageContent[1], messageContent[7]);
+                        message = new Image(getPerson(messageContent[3]), MessageDirection.IN, timestamp, messageContent[7]);
                     } else {
-                        message = new Image(getPerson(messageContent[3]), MessageDirection.OUT, messageContent[1], messageContent[7]);
+                        message = new Image(getPerson(messageContent[3]), MessageDirection.OUT, timestamp, messageContent[7]);
                     }
                 }
                 messages.add(message);
             }
             return messages;
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             return null;
         }
     }
