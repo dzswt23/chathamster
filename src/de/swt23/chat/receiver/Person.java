@@ -1,7 +1,7 @@
 package de.swt23.chat.receiver;
 
 /**
- * a person is a user to whom a message can be sent
+ * a person is a user that sent / was sent a message
  */
 public class Person extends Entity {
 

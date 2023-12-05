@@ -51,11 +51,13 @@ public class ChatProgram {
     private int displayMenuAndGetChoice(String[] options) {
         while (true) {
             System.out.println("\nPlease enter a number:\n");
+            // print the menu
             for (int i = 0; i < options.length; i++) {
                 System.out.println("\t" + (i + 1) + " = " + options[i]);
             }
             // catch if the user did not enter a number
             try {
+                // get the user input
                 int number = Integer.parseInt(getUserInput("\nYour choice: "));
                 // check if the number is valid
                 if (number >= 1 && number <= options.length) {
@@ -96,11 +98,11 @@ public class ChatProgram {
         boolean exitProgram = false;
         while (!exitProgram) {
             int selection = displayMenuAndGetChoice(new String[]{
-                "Get a list of all users",
-                "Get a list of all messages",
-                "Manage your groups",
-                "Send a message",
-                "Exit"
+                    "Get a list of all users",
+                    "Get a list of all messages",
+                    "Manage your groups",
+                    "Send a message",
+                    "Exit"
             });
             switch (selection) {
                 case 1:
@@ -163,12 +165,12 @@ public class ChatProgram {
         boolean backToMainMenu = false;
         while (!backToMainMenu) {
             int selection = displayMenuAndGetChoice(new String[]{
-                "Create a new group",
-                "Delete an existing group",
-                "Show all created groups and their members",
-                "Add a person to a group",
-                "Remove a person from a group",
-                "Go back to the main menu"
+                    "Create a new group",
+                    "Delete an existing group",
+                    "Show all created groups and their members",
+                    "Add a person to a group",
+                    "Remove a person from a group",
+                    "Go back to the main menu"
             });
             switch (selection) {
                 case 1:
@@ -301,9 +303,9 @@ public class ChatProgram {
         boolean backToMainMenu = false;
         while (!backToMainMenu) {
             int selection = displayMenuAndGetChoice(new String[]{
-                "Send an image",
-                "Send a text",
-                "Go back to the main menu"
+                    "Send an image",
+                    "Send a text",
+                    "Go back to the main menu"
             });
             switch (selection) {
                 case 1:
@@ -345,7 +347,12 @@ public class ChatProgram {
             // check if the provided path exists AND that it is not a directory
             File file = new File(imagePath);
             if (file.exists() && !file.isDirectory()) {
-                validImagePath = true;
+                // check if the image is smaller than 1MB
+                if ((file.length() / 1024) <= 1024) {
+                    validImagePath = true;
+                } else {
+                    System.out.println("The selected image is bigger than 1MB!");
+                }
             } else {
                 System.out.println("Invalid image path. Please enter a valid path!");
             }
