@@ -11,6 +11,8 @@ import de.swt23.chat.session.Session;
 import de.thm.oop.chat.base.server.BasicTHMChatServer;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -180,7 +182,7 @@ public class ChatManager {
     /**
      * send an image message to a receiver (group or person)
      *
-     * @param image  the image that shall be sent
+     * @param image the image that shall be sent
      * @return true if the message was sent successfully
      */
     private boolean sendImageMessage(Image image) {
@@ -205,7 +207,7 @@ public class ChatManager {
     /**
      * send an image message to a receiver (group or person)
      *
-     * @param text   the text that shall be sent
+     * @param text the text that shall be sent
      * @return true if the message was sent successfully
      */
     private boolean sendTextMessage(Text text) {
@@ -238,20 +240,25 @@ public class ChatManager {
         }
         try {
             ArrayList<Message> messages = new ArrayList<>();
+            // formats for the timestamp
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
             for (String stringMessage : chatServer.getMessages(currentSession.getUsername(), currentSession.getPassword(), 0)) {
                 String[] messageContent = stringMessage.split("\\|");
                 Message message;
+                // transforming the timestamp into the new format
+                String timestamp = outputFormat.format(inputFormat.parse(messageContent[1]));
                 if (messageContent[4].equals("txt")) {
                     if (messageContent[2].equals("in")) {
-                        message = new Text(getPerson(messageContent[3]), MessageDirection.IN, messageContent[1], messageContent[5]);
+                        message = new Text(getPerson(messageContent[3]), MessageDirection.IN, timestamp, messageContent[5]);
                     } else {
-                        message = new Text(getPerson(messageContent[3]), MessageDirection.OUT, messageContent[1], messageContent[5]);
+                        message = new Text(getPerson(messageContent[3]), MessageDirection.OUT, timestamp, messageContent[5]);
                     }
                 } else {
                     if (messageContent[2].equals("in")) {
-                        message = new Image(getPerson(messageContent[3]), MessageDirection.IN, messageContent[1], messageContent[7]);
+                        message = new Image(getPerson(messageContent[3]), MessageDirection.IN, timestamp, messageContent[7]);
                     } else {
-                        message = new Image(getPerson(messageContent[3]), MessageDirection.OUT, messageContent[1], messageContent[7]);
+                        message = new Image(getPerson(messageContent[3]), MessageDirection.OUT, timestamp, messageContent[7]);
                     }
                 }
                 messages.add(message);
@@ -259,6 +266,8 @@ public class ChatManager {
             return messages;
         } catch (IOException e) {
             return null;
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 
