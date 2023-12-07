@@ -395,7 +395,7 @@ public class ChatProgram {
             int selection = displayMenuAndGetChoice(new String[]{
                     "Start search for the grain:",
                     "Go back to the main menu"
-                    });
+            });
 
             switch (selection) {
                 case 1:
