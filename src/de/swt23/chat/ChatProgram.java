@@ -102,6 +102,7 @@ public class ChatProgram {
                     "Get a list of all messages",
                     "Manage your groups",
                     "Send a message",
+                    "Chat Hamster",
                     "Exit"
             });
             switch (selection) {
@@ -118,6 +119,9 @@ public class ChatProgram {
                     sendMessage();
                     break;
                 case 5:
+                    chatHamster();
+                    break;
+                case 6:
                     scanner.close();
                     System.out.println("See you next time!");
                     exitProgram = true;
@@ -378,5 +382,33 @@ public class ChatProgram {
         } else {
             System.out.println("The message was not sent!");
         }
+    }
+
+    /**
+     * Open the remote ChatHamster
+     * for Backtracking of a possible path
+     *
+     */
+    public void chatHamster(){
+        boolean backToMainMenu = false;
+        while (!backToMainMenu) {
+            int selection = displayMenuAndGetChoice(new String[]{
+                    "Start search for the grain:",
+                    "Go back to the main menu"
+                    });
+
+            switch (selection) {
+                case 1:
+                    System.out.println("\nColor of the hamster: " );
+                    break;
+                case 2:
+                    backToMainMenu = true;
+                    break;
+                default:
+                    System.out.println("Invalid selection!");
+                    break;
+            }
+        }
+
     }
 }
