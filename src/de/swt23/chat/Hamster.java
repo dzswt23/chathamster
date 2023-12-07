@@ -13,6 +13,7 @@ public class Hamster {
     public Hamster(ChatManager manager) {
         this.manager = manager;
         person = new Person("hamster23ws");
+        manager.sendMessage(new Text(person, MessageDirection.OUT, "init"));
     }
 
     /**
