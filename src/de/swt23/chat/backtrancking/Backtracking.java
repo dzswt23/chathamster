@@ -82,7 +82,8 @@ import java.util.ArrayList;
      * Ruft die sucheWeg-Methode auf, um eine Route zum Korn zu finden
      */
     public void sucheRoute() {
-        if (!sucheWeg(hamster.getReihe(), hamster.getSpalte())) {
+        //Mal gucken ob es klappt hardcodiert
+        if (!sucheWeg(1, 1)) {
             System.out.println("Ziel nicht erreichbar");
         }
     }
