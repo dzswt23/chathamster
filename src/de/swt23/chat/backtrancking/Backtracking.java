@@ -1,7 +1,10 @@
 package de.swt23.chat.backtrancking;
 
+import de.swt23.chat.Direction;
+import de.swt23.chat.manager.ChatManager;
 import de.swt23.chat.message.Message;
 import de.swt23.chat.message.Text;
+import de.swt23.chat.Hamster;
 
 import java.util.ArrayList;
 
@@ -21,8 +24,8 @@ import java.util.ArrayList;
     private int knotenZaehler; // zählt alle Wegpunkte
     private int[][] karte; // Abbild des Spielfelds
 
-    public Backtracking() {
-        hamster = new Hamster();
+    public Backtracking(ChatManager manager) {
+        hamster = new Hamster(manager);
         knotenZaehler = 0;
     }
 
@@ -83,7 +86,7 @@ import java.util.ArrayList;
      */
     public void sucheRoute() {
         //Mal gucken ob es klappt hardcodiert
-        if (!sucheWeg(1, 1)) {
+        if (!sucheWeg(hamster.getReihe(), hamster.getSpalte())) {
             System.out.println("Ziel nicht erreichbar");
         }
     }
@@ -150,25 +153,25 @@ import java.util.ArrayList;
 
             // Nach Süden gehen
             if (reihe > alteReihe) {
-                hamster.setBlickrichtung(2);
+                hamster.setBlickrichtung(Direction.SOUTH);
                 hamster.vor();
             }
 
             // Nach Norden gehen
             if (reihe < alteReihe) {
-                hamster.setBlickrichtung(0);
+                hamster.setBlickrichtung(Direction.NORTH);
                 hamster.vor();
             }
 
             // Nach Osten gehen
             if (spalte > alteSpalte) {
-                hamster.setBlickrichtung(1);
+                hamster.setBlickrichtung(Direction.EAST);
                 hamster.vor();
             }
 
             // Nach Westen gehen
             if (spalte < alteSpalte) {
-                hamster.setBlickrichtung(3);
+                hamster.setBlickrichtung(Direction.WEST);
                 hamster.vor();
             }
         }
