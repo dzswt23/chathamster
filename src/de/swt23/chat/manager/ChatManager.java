@@ -1,5 +1,6 @@
 package de.swt23.chat.manager;
 
+import de.swt23.chat.backtrancking.Backtracking;
 import de.swt23.chat.message.Image;
 import de.swt23.chat.message.Message;
 import de.swt23.chat.message.MessageDirection;
@@ -293,5 +294,14 @@ public class ChatManager {
 
     public ArrayList<Group> getGroups() {
         return groups;
+    }
+
+    public void startHamsterBacktracking() {
+
+        Backtracking backtracking = new Backtracking(this);
+
+        backtracking.scanneKarte(getMessages());
+        backtracking.sucheRoute();
+        backtracking.geheWeg();
     }
 }

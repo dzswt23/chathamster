@@ -399,6 +399,7 @@ public class ChatProgram {
 
             switch (selection) {
                 case 1:
+                    manager.startHamsterBacktracking();
                     System.out.println("\nColor of the hamster: " );
                     break;
                 case 2:
