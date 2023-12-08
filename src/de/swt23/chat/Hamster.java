@@ -9,11 +9,15 @@ public class Hamster {
 
     private ChatManager manager;
     private Person person;
+    private Direction hamsterDirection;
+    private int Blickrichtung;
+    private int turns;
 
     public Hamster(ChatManager manager) {
         this.manager = manager;
         person = new Person("hamster23ws");
         manager.sendMessage(new Text(person, MessageDirection.OUT, "init"));
+        this.hamsterDirection = Direction.EAST;
     }
 
     /**
@@ -28,5 +32,28 @@ public class Hamster {
      */
     public void linksUm() {
         manager.sendMessage(new Text(person, MessageDirection.OUT, "l"));
+        switch (hamsterDirection) {
+            case NORTH:
+                hamsterDirection = Direction.WEST;
+                break;
+            case EAST:
+                hamsterDirection = Direction.NORTH;
+                break;
+            case SOUTH:
+                hamsterDirection = Direction.EAST;
+                break;
+            case WEST:
+                hamsterDirection = Direction.SOUTH;
+                break;
+            default:
+                System.out.println("klappt nicht!!!!!");
+                break;
+        }
+    }
+
+    public void setBlickrichtung(Direction direction){
+        while(direction != hamsterDirection){
+            linksUm();
+        }
     }
 }
