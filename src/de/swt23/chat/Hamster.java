@@ -11,9 +11,8 @@ public class Hamster {
     private Person person;
     private Direction hamsterDirection;
 
-    private int reihe = 1;
-
-    private int spalte = 1;
+    private int reihe = 0;
+    private int spalte = 0;
 
     public Hamster(ChatManager manager) {
         this.manager = manager;
@@ -30,16 +29,16 @@ public class Hamster {
         switch (hamsterDirection){
 
             case NORTH:
-                reihe ++;
+                reihe++;
                 break;
             case EAST:
-                spalte ++;
+                spalte++;
                 break;
             case SOUTH:
-                reihe --;
+                reihe--;
                 break;
             case WEST:
-                spalte --;
+                spalte--;
                 break;
             default:
                 System.out.println("klappt nicht!!!!!");
