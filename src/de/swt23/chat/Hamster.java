@@ -18,6 +18,7 @@ public class Hamster {
         this.manager = manager;
         person = new Person("hamster23ws");
         manager.sendMessage(new Text(person, MessageDirection.OUT, "init"));
+
         this.hamsterDirection = Direction.EAST;
     }
 
@@ -51,6 +52,7 @@ public class Hamster {
      * sends the message "l" to user "hamster32ws" for it to turn left
      */
     public void linksUm() {
+
         manager.sendMessage(new Text(person, MessageDirection.OUT, "l"));
         switch (hamsterDirection) {
             case NORTH:

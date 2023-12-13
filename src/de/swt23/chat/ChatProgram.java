@@ -1,5 +1,6 @@
 package de.swt23.chat;
 
+import de.swt23.chat.backtrancking.Backtracking;
 import de.swt23.chat.manager.ChatManager;
 import de.swt23.chat.message.Image;
 import de.swt23.chat.message.Message;
@@ -16,6 +17,8 @@ import java.util.Scanner;
 public class ChatProgram {
     private final Scanner scanner;
     private final ChatManager manager;
+
+    private Hamster hamster;
 
     public ChatProgram() {
         scanner = new Scanner(System.in);
@@ -390,6 +393,10 @@ public class ChatProgram {
      *
      */
     public void chatHamster(){
+        hamster = new Hamster(manager);
+        Backtracking backtracking = new Backtracking(manager,hamster);
+
+        listAllMessages();
         boolean backToMainMenu = false;
         while (!backToMainMenu) {
             int selection = displayMenuAndGetChoice(new String[]{
@@ -399,8 +406,7 @@ public class ChatProgram {
 
             switch (selection) {
                 case 1:
-                    manager.startHamsterBacktracking();
-                    System.out.println("\nColor of the hamster: " );
+                    manager.startHamsterBacktracking(backtracking);
                     break;
                 case 2:
                     backToMainMenu = true;

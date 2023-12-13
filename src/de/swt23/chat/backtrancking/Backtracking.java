@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 /*class*/public class Backtracking {
     private int ANZAHL_REIHEN = 0;
-    private int ANZAHL_SPALTEN = 0;
+    private int ANZAHL_SPALTEN =0;
 
 
     private static final int LEERES_FELD = 0;
@@ -24,21 +24,44 @@ import java.util.ArrayList;
     private int knotenZaehler; // zählt alle Wegpunkte
     private int[][] karte; // Abbild des Spielfelds
 
-    public Backtracking(ChatManager manager) {
-        hamster = new Hamster(manager);
+    private ChatManager manager;
+
+    public Backtracking(ChatManager manager,Hamster hamster) {
+        this.hamster = hamster;
         knotenZaehler = 0;
+        this.manager = manager;
     }
 
     /*
      * Scannt die Karte auf Mauern und Körner
      */
-    public void scanneKarte(ArrayList<Message> messages) {
+    public void scanneKarte() {
         int stelle = 17;
-        Message m = messages.get(messages.size() - 1);
-        if (m instanceof Text text) {
+
+
+        Message m = manager.getMessages().get(manager.getMessages().size()-1);
+
+        while(m instanceof Text text && !text.getText().contains("territorium")){
+
+            System.out.println("Territorium :"+ text.getText());
+            m = manager.getMessages().get(manager.getMessages().size()-1);
+
+            System.out.println(m);
+            System.out.println("warte");
+
+        }
+
+        ArrayList<Message> messages = manager.getMessages();
+
+        if(m instanceof Text text){
+
+
+            m = messages.get(messages.size()-1);
+
+
             if (text.getText().contains("territorium:")) {
-                ANZAHL_SPALTEN = text.getText().charAt(14);
-                ANZAHL_REIHEN = text.getText().charAt(16);
+                ANZAHL_SPALTEN = text.getText().charAt(13);
+                ANZAHL_REIHEN = text.getText().charAt(15);
 
                 weg = new Knoten[ANZAHL_REIHEN * ANZAHL_SPALTEN];
 
@@ -46,17 +69,19 @@ import java.util.ArrayList;
                 for (int reihe = 0; reihe < karte.length; reihe++) {
 
                     for (int spalte = 0; spalte < karte[0].length; spalte++) {
-
-                        if (text.getText().charAt(stelle) == 'x') {
-                            karte[reihe][spalte] = MAUER_DA;
+                        if(stelle < text.getText().length()){
+                            if (text.getText().charAt(stelle) == 'x') {
+                                karte[reihe][spalte] = MAUER_DA;
+                            }
+                            if (text.getText().charAt(stelle) == '!') {
+                                karte[reihe][spalte] = KORN_DA;
+                            }
+                            if (text.getText().charAt(stelle) == '0') {
+                                karte[reihe][spalte] = LEERES_FELD;
+                            }else {
+                                break;
+                            }
                         }
-                        if (text.getText().charAt(stelle) == '!') {
-                            karte[reihe][spalte] = KORN_DA;
-                        }
-                        if (text.getText().charAt(stelle) == '0') {
-                            karte[reihe][spalte] = LEERES_FELD;
-                        }
-
                         stelle = stelle + 2;
                     }
 
@@ -85,6 +110,7 @@ import java.util.ArrayList;
      * Ruft die sucheWeg-Methode auf, um eine Route zum Korn zu finden
      */
     public void sucheRoute() {
+        System.out.println("Ist in Suche Route");
         //Mal gucken ob es klappt hardcodiert
         if (!sucheWeg(hamster.getReihe(), hamster.getSpalte())) {
             System.out.println("Ziel nicht erreichbar");
@@ -97,6 +123,8 @@ import java.util.ArrayList;
     private boolean sucheWeg(int reihe, int spalte) {
         // Überprüft, ob der Hamster zu der Position gehen darf, Pfad kann hier
         // nicht fortgesetzt werden
+
+        System.out.println("Ist in Suche Weg");
         if (!darfGehen(reihe, spalte)) {
             return false;
         }
@@ -138,12 +166,14 @@ import java.util.ArrayList;
         // geprüft
         karte[reihe][spalte] = LEERES_FELD;
         return false;
+
     }
 
     /*
      * Lässt den Hamster den berechneteten Weg traversieren
      */
     public void geheWeg() {
+        System.out.println("Ist in geheWeg");
         for (int i = knotenZaehler - 1; i >= 0; i--) {
             int reihe = weg[i].getReihe();
             int spalte = weg[i].getSpalte();
