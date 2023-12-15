@@ -306,9 +306,7 @@ public class ChatManager {
     }
 
     public void startHamsterBacktracking(Backtracking backtracking) {
-        System.out.println("Ist in startHamsterBacktracking");
         backtracking.scanneKarte();
-        System.out.println("scanneKarte hat geklappt");
         backtracking.sucheRoute();
         backtracking.geheWeg();
     }
