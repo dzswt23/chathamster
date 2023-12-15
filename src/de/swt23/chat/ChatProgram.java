@@ -406,7 +406,10 @@ public class ChatProgram {
 
             switch (selection) {
                 case 1:
-                    manager.startHamsterBacktracking(backtracking);
+                    backtracking.scanneKarte();
+                    backtracking.zeigeKarteInKonsole();
+
+                    //manager.startHamsterBacktracking(backtracking);
                     break;
                 case 2:
                     backToMainMenu = true;

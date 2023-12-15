@@ -93,6 +93,30 @@ import java.util.ArrayList;
 
     }
 
+    public void zeigeKarteInKonsole() {
+        for (int reihe = 0; reihe < karte.length; reihe++) {
+            for (int spalte = 0; spalte < karte[0].length; spalte++) {
+                switch (karte[reihe][spalte]) {
+                    case MAUER_DA:
+                        System.out.print("x ");
+                        break;
+                    case KORN_DA:
+                        System.out.print("! ");
+                        break;
+                    case LEERES_FELD:
+                        System.out.print("0 ");
+                        break;
+                    default:
+                        break;
+                }
+            }
+            System.out.println(); // Neue Zeile für die nächste Reihe
+        }
+    }
+
+
+
+
     /*
      * Prüfung, ob der Hamster zu der Position aus den Übergabeparametern reihe
      * und spalte gehen kann Dazu gehört: Er darf das Spielfeld nicht verlassen
