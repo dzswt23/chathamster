@@ -1,12 +1,12 @@
 package de.swt23.chat.backtracking;
 
-import de.swt23.chat.Direction;
+import de.swt23.chat.hamster.HamsterDirection;
 import de.swt23.chat.manager.ChatManager;
 import de.swt23.chat.message.Message;
 import de.swt23.chat.message.Text;
-import de.swt23.chat.Hamster;
+import de.swt23.chat.hamster.Hamster;
 
-/*class*/public class Backtracking {
+public class Backtracking {
     private int ANZAHL_REIHEN = 0;
     private int ANZAHL_SPALTEN =0;
 
@@ -197,25 +197,25 @@ import de.swt23.chat.Hamster;
 
             // Nach Süden gehen
             if (reihe > alteReihe) {
-                hamster.setBlickrichtung(Direction.SOUTH);
+                hamster.setBlickrichtung(HamsterDirection.SOUTH);
                 hamster.vor();
             }
 
             // Nach Norden gehen
             if (reihe < alteReihe) {
-                hamster.setBlickrichtung(Direction.NORTH);
+                hamster.setBlickrichtung(HamsterDirection.NORTH);
                 hamster.vor();
             }
 
             // Nach Osten gehen
             if (spalte > alteSpalte) {
-                hamster.setBlickrichtung(Direction.EAST);
+                hamster.setBlickrichtung(HamsterDirection.EAST);
                 hamster.vor();
             }
 
             // Nach Westen gehen
             if (spalte < alteSpalte) {
-                hamster.setBlickrichtung(Direction.WEST);
+                hamster.setBlickrichtung(HamsterDirection.WEST);
                 hamster.vor();
             }
         }
