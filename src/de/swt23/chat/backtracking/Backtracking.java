@@ -34,51 +34,38 @@ public class Backtracking {
     /*
      * Scannt die Karte auf Mauern und Körner
      */
-    public void scanneKarte() {
+    public void scanneKarte(Text text) {
         int stelle = 3;
 
+        if (text.getText().contains("territorium:")) {
+            System.out.println("Check for valid input correct");
 
-        Message m = manager.getMessages().get(manager.getMessages().size()-1);//Letzte Nachricht prüfen
+            String[] nachrichtTerritorium = text.getText().split(" ");
 
-        while(m instanceof Text text && !text.getText().contains("territorium:")){
-            m = manager.getMessages().get(manager.getMessages().size()-1);
+            ANZAHL_SPALTEN = Integer.parseInt(nachrichtTerritorium[1]);
+            ANZAHL_REIHEN = Integer.parseInt(nachrichtTerritorium[2]);
 
-            System.out.println("warte");
+            weg = new Knoten[ANZAHL_REIHEN * ANZAHL_SPALTEN];
 
-        }
+            karte = new int[ANZAHL_REIHEN][ANZAHL_SPALTEN];
 
-        if(m instanceof Text text){
+            for (int reihe = 0; reihe < karte.length; reihe++) {
+                for (int spalte = 0; spalte < karte[0].length; spalte++) {
 
-            if (text.getText().contains("territorium:")) {
-
-                String[] nachrichtTerritorium = text.getText().split(" ");
-
-                ANZAHL_SPALTEN = Integer.parseInt(nachrichtTerritorium[1]);
-                ANZAHL_REIHEN = Integer.parseInt(nachrichtTerritorium[2]);
-
-                weg = new Knoten[ANZAHL_REIHEN * ANZAHL_SPALTEN];
-
-                karte = new int[ANZAHL_REIHEN][ANZAHL_SPALTEN];
-
-                for (int reihe = 0; reihe < karte.length; reihe++) {
-                    for (int spalte = 0; spalte < karte[0].length; spalte++) {
-
-                        if(stelle < nachrichtTerritorium.length){
-                            if (nachrichtTerritorium[stelle].equals("x")) {
-                                karte[reihe][spalte] = MAUER_DA;
-                            }
-                            else if (nachrichtTerritorium[stelle].equals("!")) {
-                                karte[reihe][spalte] = KORN_DA;
-                            }
-                            else if (nachrichtTerritorium[stelle].equals("0")) {
-                                karte[reihe][spalte] = LEERES_FELD;
-                            }else {
-                                break;
-                            }
+                    if(stelle < nachrichtTerritorium.length){
+                        if (nachrichtTerritorium[stelle].equals("x")) {
+                            karte[reihe][spalte] = MAUER_DA;
                         }
-                        stelle = stelle + 1;
+                        else if (nachrichtTerritorium[stelle].equals("!")) {
+                            karte[reihe][spalte] = KORN_DA;
+                        }
+                        else if (nachrichtTerritorium[stelle].equals("0")) {
+                            karte[reihe][spalte] = LEERES_FELD;
+                        }else {
+                            break;
+                        }
                     }
-
+                    stelle = stelle + 1;
                 }
 
             }
@@ -188,6 +175,7 @@ public class Backtracking {
      * Lässt den Hamster den berechneteten Weg traversieren
      */
     public void geheWeg() {
+        System.out.println("Gehe weg jetzt");
         for (int i = knotenZaehler - 1; i >= 0; i--) {
             int reihe = weg[i].getReihe();
             int spalte = weg[i].getSpalte();

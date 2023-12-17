@@ -123,7 +123,7 @@ public class ChatProgram {
                     sendMessage();
                     break;
                 case 5:
-                    chatHamster();
+                    startChatHamster();
                     break;
                 case 6:
                     scanner.close();
@@ -393,32 +393,20 @@ public class ChatProgram {
      * for Backtracking of a possible path
      *
      */
-    public void chatHamster(){
-        hamster = new Hamster(manager);
-        Backtracking backtracking = new Backtracking(manager,hamster);
+    public void startChatHamster(){
+        System.out.println("Welcome to the chat hamster");
+        Backtracking backtracking = manager.startHamster();
 
-        listAllMessages();
-        boolean backToMainMenu = false;
-        while (!backToMainMenu) {
-            int selection = displayMenuAndGetChoice(new String[]{
-                    "Start search for the grain:",
-                    "Go back to the main menu"
-            });
-
-            switch (selection) {
-                case 1:
-                    hamster.getFarbe();
-                    manager.startHamsterBacktracking(backtracking);
-                    backtracking.zeigeKarteInKonsole();
-                    break;
-                case 2:
-                    backToMainMenu = true;
-                    break;
-                default:
-                    System.out.println("Invalid selection!");
-                    break;
-            }
+        if (backtracking == null) {
+            return;
         }
 
+        String input = "";
+        while (!input.equals("start")) {
+            input = getUserInput("Enter start to send the hamster on its way: ");
+        }
+
+        backtracking.geheWeg();
+        System.out.println("Your hamster will start moving shortly.");
     }
 }

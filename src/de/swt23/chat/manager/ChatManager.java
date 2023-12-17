@@ -305,9 +305,50 @@ public class ChatManager {
         return groups;
     }
 
-    public void startHamsterBacktracking(Backtracking backtracking) {
-        backtracking.scanneKarte();
+    public Backtracking startHamster() {
+        Hamster hamster = new Hamster(this);
+        Backtracking backtracking = new Backtracking(this, hamster);
+
+        // check if the messages for the color and for the map have already arrived
+        ArrayList<Message> messages = getMessages();
+        boolean waitingForServer = true;
+        int iterations = 0;
+        while (waitingForServer && iterations < 10) {
+            iterations++;
+            Message colorMessage = messages.get(messages.size() - 2);
+            if (colorMessage instanceof Text colorText) {
+                if (colorText.getText().contains("farbe:")) {
+                    System.out.println("Your color: " + colorText.getText().replace("farbe: ", ""));
+                }
+            }
+
+            Message territoryMessage = messages.get(messages.size() - 1);
+            if (territoryMessage instanceof Text territoryText) {
+                if (territoryText.getText().contains("territorium:")) {
+                    System.out.println("Scanning territory");
+                    backtracking.scanneKarte(territoryText);
+                    System.out.println("Scan complete");
+                    waitingForServer = false;
+                    continue;
+                }
+            }
+
+            try {
+                Thread.sleep(1000);
+                messages = getMessages();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (iterations == 10) {
+            System.out.println("There was an error preparing the hamster!");
+            return null;
+        }
+
+        System.out.println("Calculating route to corn");
         backtracking.sucheRoute();
-        backtracking.geheWeg();
+        System.out.println("Route found");
+        return backtracking;
     }
 }
