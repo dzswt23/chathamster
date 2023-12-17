@@ -1,12 +1,10 @@
-package de.swt23.chat.backtrancking;
+package de.swt23.chat.backtracking;
 
 import de.swt23.chat.Direction;
 import de.swt23.chat.manager.ChatManager;
 import de.swt23.chat.message.Message;
 import de.swt23.chat.message.Text;
 import de.swt23.chat.Hamster;
-
-import java.util.ArrayList;
 
 /*class*/public class Backtracking {
     private int ANZAHL_REIHEN = 0;

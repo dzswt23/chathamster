@@ -1,7 +1,7 @@
 package de.swt23.chat.manager;
 
 import de.swt23.chat.Hamster;
-import de.swt23.chat.backtrancking.Backtracking;
+import de.swt23.chat.backtracking.Backtracking;
 import de.swt23.chat.message.Image;
 import de.swt23.chat.message.Message;
 import de.swt23.chat.message.MessageDirection;

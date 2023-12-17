@@ -1,6 +1,6 @@
 package de.swt23.chat;
 
-import de.swt23.chat.backtrancking.Backtracking;
+import de.swt23.chat.backtracking.Backtracking;
 import de.swt23.chat.manager.ChatManager;
 import de.swt23.chat.message.Image;
 import de.swt23.chat.message.Message;
