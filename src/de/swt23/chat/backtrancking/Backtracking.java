@@ -10,12 +10,13 @@ import java.util.ArrayList;
 
 /*class*/public class Backtracking {
     private int ANZAHL_REIHEN = 0;
-    private int ANZAHL_SPALTEN = 0;
+    private int ANZAHL_SPALTEN =0;
 
 
     private static final int LEERES_FELD = 0;
     private static final int MAUER_DA = 1;
     private static final int KORN_DA = 2;
+
     private static final int MOEGLICHER_WEG = 3;
 
 
@@ -24,40 +25,60 @@ import java.util.ArrayList;
     private int knotenZaehler; // zählt alle Wegpunkte
     private int[][] karte; // Abbild des Spielfelds
 
-    public Backtracking(ChatManager manager) {
-        hamster = new Hamster(manager);
+    private ChatManager manager;
+
+    public Backtracking(ChatManager manager,Hamster hamster) {
+        this.hamster = hamster;
         knotenZaehler = 0;
+        this.manager = manager;
     }
 
     /*
      * Scannt die Karte auf Mauern und Körner
      */
-    public void scanneKarte(ArrayList<Message> messages) {
-        int stelle = 17;
-        Message m = messages.get(messages.size() - 1);
-        if (m instanceof Text text) {
+    public void scanneKarte() {
+        int stelle = 3;
+
+
+        Message m = manager.getMessages().get(manager.getMessages().size()-1);//Letzte Nachricht prüfen
+
+        while(m instanceof Text text && !text.getText().contains("territorium:")){
+            m = manager.getMessages().get(manager.getMessages().size()-1);
+
+            System.out.println("warte");
+
+        }
+
+        if(m instanceof Text text){
+
             if (text.getText().contains("territorium:")) {
-                ANZAHL_SPALTEN = text.getText().charAt(14);
-                ANZAHL_REIHEN = text.getText().charAt(16);
+
+                String[] nachrichtTerritorium = text.getText().split(" ");
+
+                ANZAHL_SPALTEN = Integer.parseInt(nachrichtTerritorium[1]);
+                ANZAHL_REIHEN = Integer.parseInt(nachrichtTerritorium[2]);
 
                 weg = new Knoten[ANZAHL_REIHEN * ANZAHL_SPALTEN];
 
                 karte = new int[ANZAHL_REIHEN][ANZAHL_SPALTEN];
-                for (int reihe = 0; reihe < karte.length; reihe++) {
 
+                for (int reihe = 0; reihe < karte.length; reihe++) {
                     for (int spalte = 0; spalte < karte[0].length; spalte++) {
 
-                        if (text.getText().charAt(stelle) == 'x') {
-                            karte[reihe][spalte] = MAUER_DA;
+                        if(stelle < nachrichtTerritorium.length){
+                            if (nachrichtTerritorium[stelle].equals("x")) {
+                                karte[reihe][spalte] = MAUER_DA;
+                            }
+                            else if (nachrichtTerritorium[stelle].equals("!")) {
+                                karte[reihe][spalte] = KORN_DA;
+                            }
+                            else if (nachrichtTerritorium[stelle].equals("0")) {
+                                karte[reihe][spalte] = LEERES_FELD;
+                            }else {
+                                break;
+                            }
                         }
-                        if (text.getText().charAt(stelle) == '!') {
-                            karte[reihe][spalte] = KORN_DA;
-                        }
-                        if (text.getText().charAt(stelle) == '0') {
-                            karte[reihe][spalte] = LEERES_FELD;
-                        }
-
-                        stelle = stelle + 2;
+                        stelle = stelle + 1;
                     }
 
                 }
@@ -67,6 +88,29 @@ import java.util.ArrayList;
         }
 
     }
+
+    public void zeigeKarteInKonsole() {
+        for (int reihe = 0; reihe < karte.length; reihe++) {
+            for (int spalte = 0; spalte < karte[0].length; spalte++) {
+                switch (karte[reihe][spalte]) {
+                    case MAUER_DA:
+                        System.out.print("x ");
+                        break;
+                    case KORN_DA:
+                        System.out.print("! ");
+                        break;
+                    case LEERES_FELD:
+                        System.out.print("0 ");
+                        break;
+                    default:
+                        break;
+                }
+            }
+            System.out.println(); // Neue Zeile für die nächste Reihe
+        }
+    }
+
+
 
     /*
      * Prüfung, ob der Hamster zu der Position aus den Übergabeparametern reihe
@@ -97,6 +141,7 @@ import java.util.ArrayList;
     private boolean sucheWeg(int reihe, int spalte) {
         // Überprüft, ob der Hamster zu der Position gehen darf, Pfad kann hier
         // nicht fortgesetzt werden
+
         if (!darfGehen(reihe, spalte)) {
             return false;
         }
@@ -138,6 +183,7 @@ import java.util.ArrayList;
         // geprüft
         karte[reihe][spalte] = LEERES_FELD;
         return false;
+
     }
 
     /*
@@ -179,3 +225,9 @@ import java.util.ArrayList;
     }
 
 }
+
+
+
+
+
+

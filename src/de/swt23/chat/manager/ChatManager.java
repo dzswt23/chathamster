@@ -1,5 +1,7 @@
 package de.swt23.chat.manager;
 
+import de.swt23.chat.Hamster;
+import de.swt23.chat.backtrancking.Backtracking;
 import de.swt23.chat.message.Image;
 import de.swt23.chat.message.Message;
 import de.swt23.chat.message.MessageDirection;
@@ -24,10 +26,14 @@ public class ChatManager {
     private final ArrayList<Person> people;
     private Session currentSession;
 
+    private ArrayList<Message> messages;
+
+
     public ChatManager() {
         chatServer = new BasicTHMChatServer();
         groups = new ArrayList<>();
         people = new ArrayList<>();
+        messages = new ArrayList<>();
     }
 
     /**
@@ -118,6 +124,10 @@ public class ChatManager {
             }
         }
         return null;
+    }
+
+    public Hamster getHamster(Hamster hamster){
+        return hamster;
     }
 
     /**
@@ -256,7 +266,7 @@ public class ChatManager {
             return null;
         }
         try {
-            ArrayList<Message> messages = new ArrayList<>();
+
             // formats for the timestamp
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
@@ -293,5 +303,11 @@ public class ChatManager {
 
     public ArrayList<Group> getGroups() {
         return groups;
+    }
+
+    public void startHamsterBacktracking(Backtracking backtracking) {
+        backtracking.scanneKarte();
+        backtracking.sucheRoute();
+        backtracking.geheWeg();
     }
 }
