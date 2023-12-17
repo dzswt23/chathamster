@@ -1,4 +1,4 @@
-package de.swt23.chat;
+package de.swt23.chat.hamster;
 
 import de.swt23.chat.message.Message;
 import de.swt23.chat.message.MessageDirection;
@@ -8,9 +8,9 @@ import de.swt23.chat.receiver.Person;
 
 public class Hamster {
 
-    private ChatManager manager;
-    private Person person;
-    private Direction hamsterDirection;
+    private final ChatManager manager;
+    private final Person person;
+    private HamsterDirection hamsterDirection;
 
     private int reihe = 0;
     private int spalte = 0;
@@ -20,7 +20,7 @@ public class Hamster {
         person = new Person("hamster23ws");
         manager.sendMessage(new Text(person, MessageDirection.OUT, "init"));
 
-        this.hamsterDirection = Direction.EAST;
+        this.hamsterDirection = HamsterDirection.EAST;
     }
 
     /**
@@ -56,16 +56,16 @@ public class Hamster {
         manager.sendMessage(new Text(person, MessageDirection.OUT, "l"));
         switch (hamsterDirection) {
             case NORTH:
-                hamsterDirection = Direction.WEST;
+                hamsterDirection = HamsterDirection.WEST;
                 break;
             case EAST:
-                hamsterDirection = Direction.NORTH;
+                hamsterDirection = HamsterDirection.NORTH;
                 break;
             case SOUTH:
-                hamsterDirection = Direction.EAST;
+                hamsterDirection = HamsterDirection.EAST;
                 break;
             case WEST:
-                hamsterDirection = Direction.SOUTH;
+                hamsterDirection = HamsterDirection.SOUTH;
                 break;
             default:
                 System.out.println("klappt nicht!!!!!");
@@ -73,7 +73,7 @@ public class Hamster {
         }
     }
 
-    public void setBlickrichtung(Direction direction) {
+    public void setBlickrichtung(HamsterDirection direction) {
         while (direction != hamsterDirection) {
             linksUm();
         }

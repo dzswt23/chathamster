@@ -1,6 +1,6 @@
-package de.swt23.chat;
+package de.swt23.chat.hamster;
 
-public enum Direction {
+public enum HamsterDirection {
 
     NORTH(0),
 
@@ -11,7 +11,7 @@ public enum Direction {
     EAST(1);
 
     private final int value;
-    private Direction(int value) {
+    private HamsterDirection(int value) {
         this.value = value;
     }
 
