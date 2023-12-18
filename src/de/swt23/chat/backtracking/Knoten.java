@@ -1,8 +1,8 @@
 package de.swt23.chat.backtracking;
 
 public class Knoten {
-    private int reihe;
-    private int spalte;
+    private final int reihe;
+    private final int spalte;
 
     public Knoten(int reihe, int spalte) {
         this.reihe = reihe;
