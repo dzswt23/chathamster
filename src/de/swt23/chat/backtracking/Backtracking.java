@@ -1,116 +1,70 @@
-package de.swt23.chat.backtrancking;
+package de.swt23.chat.backtracking;
 
-import de.swt23.chat.Direction;
-import de.swt23.chat.manager.ChatManager;
-import de.swt23.chat.message.Message;
+import de.swt23.chat.hamster.Hamster;
+import de.swt23.chat.hamster.HamsterDirection;
 import de.swt23.chat.message.Text;
-import de.swt23.chat.Hamster;
 
-import java.util.ArrayList;
-
-/*class*/public class Backtracking {
-    private int ANZAHL_REIHEN = 0;
-    private int ANZAHL_SPALTEN =0;
-
-
+public class Backtracking {
     private static final int LEERES_FELD = 0;
     private static final int MAUER_DA = 1;
     private static final int KORN_DA = 2;
-
     private static final int MOEGLICHER_WEG = 3;
-
-
-    private Hamster hamster; // eigener Hamster
+    private final Hamster hamster; // eigener Hamster
+    private int ANZAHL_REIHEN = 0;
+    private int ANZAHL_SPALTEN = 0;
     private Knoten[] weg; // speichert den Weg zum Korn
     private int knotenZaehler; // zählt alle Wegpunkte
     private int[][] karte; // Abbild des Spielfelds
 
-    private ChatManager manager;
-
-    public Backtracking(ChatManager manager,Hamster hamster) {
+    public Backtracking(Hamster hamster) {
         this.hamster = hamster;
         knotenZaehler = 0;
-        this.manager = manager;
     }
 
     /*
      * Scannt die Karte auf Mauern und Körner
      */
-    public void scanneKarte() {
-        int stelle = 3;
+    public void scanneKarte(Text text) {
+        if (text.getText().contains("territorium:")) {
+            System.out.println("Check for valid input correct");
 
+            String[] territoriumDetails = text.getText().split(" ");
 
-        Message m = manager.getMessages().get(manager.getMessages().size()-1);//Letzte Nachricht prüfen
+            ANZAHL_SPALTEN = Integer.parseInt(territoriumDetails[1]);
+            ANZAHL_REIHEN = Integer.parseInt(territoriumDetails[2]);
+            weg = new Knoten[ANZAHL_REIHEN * ANZAHL_SPALTEN];
+            karte = new int[ANZAHL_REIHEN][ANZAHL_SPALTEN];
 
-        while(m instanceof Text text && !text.getText().contains("territorium:")){
-            m = manager.getMessages().get(manager.getMessages().size()-1);
+            // char array, welches nur Informationen aus der Karte enthält
+            char[] territoriumObjekte = new char[territoriumDetails.length - 3];
+            for (int i = 3; i < territoriumDetails.length; i++) {
+                territoriumObjekte[i - 3] = territoriumDetails[i].charAt(0);
+            }
 
-            System.out.println("warte");
-
-        }
-
-        if(m instanceof Text text){
-
-            if (text.getText().contains("territorium:")) {
-
-                String[] nachrichtTerritorium = text.getText().split(" ");
-
-                ANZAHL_SPALTEN = Integer.parseInt(nachrichtTerritorium[1]);
-                ANZAHL_REIHEN = Integer.parseInt(nachrichtTerritorium[2]);
-
-                weg = new Knoten[ANZAHL_REIHEN * ANZAHL_SPALTEN];
-
-                karte = new int[ANZAHL_REIHEN][ANZAHL_SPALTEN];
-
-                for (int reihe = 0; reihe < karte.length; reihe++) {
-                    for (int spalte = 0; spalte < karte[0].length; spalte++) {
-
-                        if(stelle < nachrichtTerritorium.length){
-                            if (nachrichtTerritorium[stelle].equals("x")) {
+            // Informationen in bisheriges System konvertieren
+            int index = 0;
+            for (int reihe = 0; reihe < karte.length; reihe++) {
+                for (int spalte = 0; spalte < karte[0].length; spalte++) {
+                    if (index < territoriumObjekte.length) {
+                        switch (territoriumObjekte[index]) {
+                            case 'x':
                                 karte[reihe][spalte] = MAUER_DA;
-                            }
-                            else if (nachrichtTerritorium[stelle].equals("!")) {
-                                karte[reihe][spalte] = KORN_DA;
-                            }
-                            else if (nachrichtTerritorium[stelle].equals("0")) {
-                                karte[reihe][spalte] = LEERES_FELD;
-                            }else {
                                 break;
-                            }
+                            case '!':
+                                karte[reihe][spalte] = KORN_DA;
+                                break;
+                            case '0':
+                                karte[reihe][spalte] = LEERES_FELD;
+                                break;
+                            default:
+                                break;
                         }
-                        stelle = stelle + 1;
+                        index++;
                     }
-
-                }
-
-            }
-
-        }
-
-    }
-
-    public void zeigeKarteInKonsole() {
-        for (int reihe = 0; reihe < karte.length; reihe++) {
-            for (int spalte = 0; spalte < karte[0].length; spalte++) {
-                switch (karte[reihe][spalte]) {
-                    case MAUER_DA:
-                        System.out.print("x ");
-                        break;
-                    case KORN_DA:
-                        System.out.print("! ");
-                        break;
-                    case LEERES_FELD:
-                        System.out.print("0 ");
-                        break;
-                    default:
-                        break;
                 }
             }
-            System.out.println(); // Neue Zeile für die nächste Reihe
         }
     }
-
-
 
     /*
      * Prüfung, ob der Hamster zu der Position aus den Übergabeparametern reihe
@@ -120,8 +74,8 @@ import java.util.ArrayList;
      */
     private boolean darfGehen(int reihe, int spalte) {
         return reihe >= 0 && spalte >= 0 && reihe < ANZAHL_REIHEN
-                && spalte < ANZAHL_SPALTEN && karte[reihe][spalte] != MAUER_DA
-                && karte[reihe][spalte] != MOEGLICHER_WEG;
+            && spalte < ANZAHL_SPALTEN && karte[reihe][spalte] != MAUER_DA
+            && karte[reihe][spalte] != MOEGLICHER_WEG;
     }
 
     /*
@@ -131,7 +85,7 @@ import java.util.ArrayList;
     public void sucheRoute() {
         //Mal gucken ob es klappt hardcodiert
         if (!sucheWeg(hamster.getReihe(), hamster.getSpalte())) {
-            System.out.println("Ziel nicht erreichbar");
+            System.out.println("The destination cannot be reached");
         }
     }
 
@@ -183,7 +137,6 @@ import java.util.ArrayList;
         // geprüft
         karte[reihe][spalte] = LEERES_FELD;
         return false;
-
     }
 
     /*
@@ -199,29 +152,28 @@ import java.util.ArrayList;
 
             // Nach Süden gehen
             if (reihe > alteReihe) {
-                hamster.setBlickrichtung(Direction.SOUTH);
+                hamster.setBlickrichtung(HamsterDirection.SOUTH);
                 hamster.vor();
             }
 
             // Nach Norden gehen
             if (reihe < alteReihe) {
-                hamster.setBlickrichtung(Direction.NORTH);
+                hamster.setBlickrichtung(HamsterDirection.NORTH);
                 hamster.vor();
             }
 
             // Nach Osten gehen
             if (spalte > alteSpalte) {
-                hamster.setBlickrichtung(Direction.EAST);
+                hamster.setBlickrichtung(HamsterDirection.EAST);
                 hamster.vor();
             }
 
             // Nach Westen gehen
             if (spalte < alteSpalte) {
-                hamster.setBlickrichtung(Direction.WEST);
+                hamster.setBlickrichtung(HamsterDirection.WEST);
                 hamster.vor();
             }
         }
-
     }
 
 }
