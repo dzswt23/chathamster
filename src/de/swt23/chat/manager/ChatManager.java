@@ -25,9 +25,7 @@ public class ChatManager {
     private final ArrayList<Group> groups;
     private final ArrayList<Person> people;
     private Session currentSession;
-
-    private ArrayList<Message> messages;
-
+    private final ArrayList<Message> messages;
 
     public ChatManager() {
         chatServer = new BasicTHMChatServer();
@@ -124,10 +122,6 @@ public class ChatManager {
             }
         }
         return null;
-    }
-
-    public Hamster getHamster(Hamster hamster){
-        return hamster;
     }
 
     /**
@@ -305,9 +299,13 @@ public class ChatManager {
         return groups;
     }
 
+    /**
+     * Prepare the hamster, tell the user the color of the hamster and do calculations to find the corn
+     * @return object of Backtracking to start the hamster
+     */
     public Backtracking startHamster() {
         Hamster hamster = new Hamster(this);
-        Backtracking backtracking = new Backtracking(this, hamster);
+        Backtracking backtracking = new Backtracking(hamster);
 
         // check if the messages for the color and for the map have already arrived
         ArrayList<Message> messages = getMessages();
@@ -315,6 +313,8 @@ public class ChatManager {
         int iterations = 0;
         while (waitingForServer && iterations < 10) {
             iterations++;
+
+            // check if the color message has arrived yet
             Message colorMessage = messages.get(messages.size() - 2);
             if (colorMessage instanceof Text colorText) {
                 if (colorText.getText().contains("farbe:")) {
@@ -322,9 +322,11 @@ public class ChatManager {
                 }
             }
 
+            // check if the territory message has arrived yet
             Message territoryMessage = messages.get(messages.size() - 1);
             if (territoryMessage instanceof Text territoryText) {
                 if (territoryText.getText().contains("territorium:")) {
+                    // prepare territory
                     System.out.println("Scanning territory");
                     backtracking.scanneKarte(territoryText);
                     System.out.println("Scan complete");
@@ -333,7 +335,9 @@ public class ChatManager {
                 }
             }
 
+            // wait in case messages were still missing
             try {
+                System.out.println("Loading..");
                 Thread.sleep(1000);
                 messages = getMessages();
             } catch (InterruptedException e) {
@@ -341,6 +345,7 @@ public class ChatManager {
             }
         }
 
+        // if the while loop took too many runs, we won't wait no longer for the messages
         if (iterations == 10) {
             System.out.println("There was an error preparing the hamster!");
             return null;
