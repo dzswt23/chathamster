@@ -1,7 +1,6 @@
 package de.swt23.chat;
 
 import de.swt23.chat.backtracking.Backtracking;
-import de.swt23.chat.hamster.Hamster;
 import de.swt23.chat.manager.ChatManager;
 import de.swt23.chat.message.Image;
 import de.swt23.chat.message.Message;
@@ -18,8 +17,6 @@ import java.util.Scanner;
 public class ChatProgram {
     private final Scanner scanner;
     private final ChatManager manager;
-
-    private Hamster hamster;
 
     public ChatProgram() {
         scanner = new Scanner(System.in);
@@ -102,12 +99,12 @@ public class ChatProgram {
         boolean exitProgram = false;
         while (!exitProgram) {
             int selection = displayMenuAndGetChoice(new String[]{
-                    "Get a list of all users",
-                    "Get a list of all messages",
-                    "Manage your groups",
-                    "Send a message",
-                    "Chat Hamster",
-                    "Exit"
+                "Get a list of all users",
+                "Get a list of all messages",
+                "Manage your groups",
+                "Send a message",
+                "Chat Hamster",
+                "Exit"
             });
             switch (selection) {
                 case 1:
@@ -173,12 +170,12 @@ public class ChatProgram {
         boolean backToMainMenu = false;
         while (!backToMainMenu) {
             int selection = displayMenuAndGetChoice(new String[]{
-                    "Create a new group",
-                    "Delete an existing group",
-                    "Show all created groups and their members",
-                    "Add a person to a group",
-                    "Remove a person from a group",
-                    "Go back to the main menu"
+                "Create a new group",
+                "Delete an existing group",
+                "Show all created groups and their members",
+                "Add a person to a group",
+                "Remove a person from a group",
+                "Go back to the main menu"
             });
             switch (selection) {
                 case 1:
@@ -311,9 +308,9 @@ public class ChatProgram {
         boolean backToMainMenu = false;
         while (!backToMainMenu) {
             int selection = displayMenuAndGetChoice(new String[]{
-                    "Send an image",
-                    "Send a text",
-                    "Go back to the main menu"
+                "Send an image",
+                "Send a text",
+                "Go back to the main menu"
             });
             switch (selection) {
                 case 1:
@@ -391,13 +388,13 @@ public class ChatProgram {
     /**
      * Open the remote ChatHamster
      * for Backtracking of a possible path
-     *
      */
-    public void startChatHamster(){
+    public void startChatHamster() {
         System.out.println("Welcome to the chat hamster");
         Backtracking backtracking = manager.startHamster();
 
         if (backtracking == null) {
+            System.out.println("An error occurred whilst initialising the connection!");
             return;
         }
 
@@ -406,7 +403,7 @@ public class ChatProgram {
             input = getUserInput("Enter start to send the hamster on its way: ");
         }
 
-        backtracking.geheWeg();
         System.out.println("Your hamster will start moving shortly.");
+        backtracking.geheWeg();
     }
 }
