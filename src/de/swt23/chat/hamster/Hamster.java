@@ -1,8 +1,7 @@
 package de.swt23.chat.hamster;
 
-import de.swt23.chat.message.Message;
-import de.swt23.chat.message.MessageDirection;
 import de.swt23.chat.manager.ChatManager;
+import de.swt23.chat.message.MessageDirection;
 import de.swt23.chat.message.Text;
 import de.swt23.chat.receiver.Person;
 
@@ -17,14 +16,13 @@ public class Hamster {
 
     public Hamster(ChatManager manager) {
         this.manager = manager;
+        hamsterDirection = HamsterDirection.EAST;
         person = new Person("hamster23ws");
         manager.sendMessage(new Text(person, MessageDirection.OUT, "init"));
-
-        this.hamsterDirection = HamsterDirection.EAST;
     }
 
     /**
-     * sends the message "v" to user "hamster32ws" for it to move forward
+     * sends the message "v" to user "hamster23ws" for it to move forward
      */
     public void vor() {
         manager.sendMessage(new Text(person, MessageDirection.OUT, "v"));
@@ -42,17 +40,16 @@ public class Hamster {
                 spalte--;
                 break;
             default:
-                System.out.println("klappt nicht!!!!!");
+                System.out.println("Error whilst navigating hamster");
                 break;
         }
 
     }
 
     /**
-     * sends the message "l" to user "hamster32ws" for it to turn left
+     * sends the message "l" to user "hamster23ws" for it to turn left
      */
     public void linksUm() {
-
         manager.sendMessage(new Text(person, MessageDirection.OUT, "l"));
         switch (hamsterDirection) {
             case NORTH:
@@ -68,7 +65,7 @@ public class Hamster {
                 hamsterDirection = HamsterDirection.SOUTH;
                 break;
             default:
-                System.out.println("klappt nicht!!!!!");
+                System.out.println("Error whilst navigating hamster");
                 break;
         }
     }
@@ -85,25 +82,5 @@ public class Hamster {
 
     public int getSpalte() {
         return spalte;
-    }
-
-    public void getFarbe() {
-        Message m = manager.getMessages().get(manager.getMessages().size() - 2); //Vorletzte Nachricht aufrufen
-
-        while (m instanceof Text text && !text.getText().contains("farbe:")) {
-            m = manager.getMessages().get(manager.getMessages().size() - 2);
-
-            System.out.println("warte");
-
-        }
-
-        if (m instanceof Text text) {
-
-            if (text.getText().contains("farbe:")) {
-                System.out.println("Farbe des Hamsters: " + m);
-            }
-
-        }
-
     }
 }
