@@ -26,8 +26,6 @@ public class Backtracking {
      */
     public void scanneKarte(Text text) {
         if (text.getText().contains("territorium:")) {
-            System.out.println("Check for valid input correct");
-
             String[] territoriumDetails = text.getText().split(" ");
 
             ANZAHL_SPALTEN = Integer.parseInt(territoriumDetails[1]);
