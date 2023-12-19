@@ -390,7 +390,7 @@ public class ChatProgram {
      * for Backtracking of a possible path
      */
     public void startChatHamster() {
-        System.out.println("Welcome to the chat hamster");
+        System.out.println("Welcome to the chat hamster!");
         Backtracking backtracking = manager.startHamster();
 
         if (backtracking == null) {

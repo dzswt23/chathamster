@@ -318,7 +318,7 @@ public class ChatManager {
             Message colorMessage = messages.get(messages.size() - 2);
             if (colorMessage instanceof Text colorText) {
                 if (colorText.getText().contains("farbe:")) {
-                    System.out.println("Your color: " + colorText.getText().replace("farbe: ", ""));
+                    System.out.println("Your color: " + colorText.getText().replace("farbe: ", "") + ".");
                 }
             }
 
@@ -327,9 +327,9 @@ public class ChatManager {
             if (territoryMessage instanceof Text territoryText) {
                 if (territoryText.getText().contains("territorium:")) {
                     // prepare territory
-                    System.out.println("Scanning territory");
+                    System.out.println("Scanning territory..");
                     backtracking.scanneKarte(territoryText);
-                    System.out.println("Scan complete");
+                    System.out.println("Scan complete!");
                     waitingForServer = false;
                     continue;
                 }
@@ -351,9 +351,9 @@ public class ChatManager {
             return null;
         }
 
-        System.out.println("Calculating route to corn");
+        System.out.println("Calculating route to corn..");
         backtracking.sucheRoute();
-        System.out.println("Route found");
+        System.out.println("Route found!");
         return backtracking;
     }
 }
